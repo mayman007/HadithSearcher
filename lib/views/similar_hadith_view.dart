@@ -22,6 +22,14 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
   bool _showBackToTopButton = false;
   late ScrollController _scrollController;
 
+  List<bool> isFavButtonPressedList = List.generate(30, (_) => false);
+
+  void _onFavButtonPressed(int index) {
+    setState(() {
+      isFavButtonPressedList[index] = !isFavButtonPressedList[index];
+    });
+  }
+
   @override
   void initState() {
     getFontFamily();
@@ -95,8 +103,20 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
       } else {
         pairedValues = [];
 
+        int current = 1;
         for (Map hadith in jsonResponse['data']) {
           pairedValues.add(hadith);
+          current += 1;
+          pairedValues.add(hadith);
+          var favHadiths = await sqlDb.selectData("SELECT * FROM 'favourites'");
+          for (var row in favHadiths) {
+            if (row['hadithid'] == hadith['hadithId']) {
+              setState(() {
+                isFavButtonPressedList[current] = true;
+              });
+              break;
+            }
+          }
         }
       }
     } on http.ClientException {
@@ -246,7 +266,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                               content: Text(
-                                                  'جاري البحث عن الشرح...'),
+                                                  'جارِ البحث عن الشرح...'),
                                               duration: Duration(seconds: 5),
                                             ));
                                             try {
@@ -356,29 +376,46 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                         height: 45,
                                         child: ElevatedButton.icon(
                                           onPressed: () async {
-                                            try {
-                                              await sqlDb.insertData(
-                                                  "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('$hadithText', '$hadithInfo', '$hadithId')");
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    'تم إضافة الحديث إلي المفضلة'),
-                                                duration: Duration(seconds: 3),
-                                              ));
-                                            } catch (e) {
-                                              await showErrorDialog(
-                                                  context,
-                                                  'هذا الحديث مكرر',
-                                                  'تم بالفعل إضافة هذا الحديث إلي المفضلة من قبل');
+                                            var dbHadithId =
+                                                await sqlDb.selectData(
+                                                    "SELECT * FROM 'favourites'");
+                                            for (var row in dbHadithId) {
+                                              if (row['hadithid'] == hadithId) {
+                                                await sqlDb.deleteData(
+                                                    "DELETE FROM 'favourites' WHERE id = ${row['id']}");
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                        const SnackBar(
+                                                  content: Text(
+                                                      'تم إزالة الحديث من المفضلة'),
+                                                  duration:
+                                                      Duration(seconds: 3),
+                                                ));
+                                                _onFavButtonPressed(index);
+                                                return;
+                                              }
                                             }
+                                            await sqlDb.insertData(
+                                                "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('$hadithText', '$hadithInfo', '$hadithId')");
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'تم إضافة الحديث إلي المفضلة'),
+                                              duration: Duration(seconds: 3),
+                                            ));
+                                            _onFavButtonPressed(index);
                                           },
-                                          icon: const Icon(
-                                            Icons.star_border,
+                                          icon: Icon(
+                                            isFavButtonPressedList[index]
+                                                ? Icons.star
+                                                : Icons.star_border,
                                             size: 25,
                                           ),
-                                          label: const Text(
-                                            'أضف إلي المفضلة',
-                                            style: TextStyle(
+                                          label: Text(
+                                            isFavButtonPressedList[index]
+                                                ? 'أزل من المفضلة'
+                                                : 'أضف إلي المفضلة',
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           style: ElevatedButton.styleFrom(
