@@ -330,7 +330,7 @@ class _SearchViewState extends State<SearchView> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                               content: Text(
-                                                  'جاري البحث عن الشرح...'),
+                                                  'جارِ البحث عن الشرح...'),
                                               duration: Duration(seconds: 5),
                                             ));
                                             try {
