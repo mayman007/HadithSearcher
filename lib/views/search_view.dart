@@ -350,6 +350,9 @@ class _SearchViewState extends State<SearchView> {
                                             fontFamily: fontFamilySelectedValue,
                                           ),
                                         ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,

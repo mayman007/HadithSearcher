@@ -257,6 +257,9 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                       fontFamily: fontFamilySelectedValue,
                                     ),
                                   ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [

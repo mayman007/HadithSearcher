@@ -224,6 +224,9 @@ class _FavouritesViewState extends State<FavouritesView> {
                                             fontFamily: fontFamilySelectedValue,
                                           ),
                                         ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
