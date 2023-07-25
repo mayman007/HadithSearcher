@@ -222,6 +222,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                   // Results ListView
                   Expanded(
                     child: ListView.builder(
+                      primary: false,
                       controller: _scrollController,
                       itemCount: pairedValues.length,
                       itemBuilder: (BuildContext context, int index) {
