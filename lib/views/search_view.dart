@@ -80,7 +80,7 @@ class _SearchViewState extends State<SearchView> {
     try {
       var url = Uri.parse(
           'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$keyword');
-      var response = await http.get(url).timeout(const Duration(seconds: 16));
+      var response = await http.get(url).timeout(const Duration(seconds: 32));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
 
