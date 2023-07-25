@@ -59,7 +59,9 @@ class _FavouritesViewState extends State<FavouritesView> {
   List<Map> pairedValues = [];
 
   fetchData() async {
-    const CircularProgressIndicator();
+    setState(() {
+      _isLoading = true; // Display CircularProgressIndicator
+    });
     pairedValues = [];
     List<Map<String, Object?>>? response =
         await sqlDb.selectData("SELECT * FROM favourites");
@@ -67,7 +69,9 @@ class _FavouritesViewState extends State<FavouritesView> {
     for (Map hadith in reversedResponse) {
       pairedValues.add(hadith);
     }
-    setState(() {}); // Refresh the UI after fetching data
+    setState(() {
+      _isLoading = false; // Display CircularProgressIndicator
+    });
   }
 
   String fontFamilySelectedValue = 'Roboto';
