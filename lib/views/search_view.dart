@@ -20,6 +20,8 @@ class _SearchViewState extends State<SearchView> {
 
   bool _isLoading = false;
 
+  bool _isEmpty = true;
+
   final textFieldController = TextEditingController();
 
   bool _showBackToTopButton = false;
@@ -69,7 +71,6 @@ class _SearchViewState extends State<SearchView> {
   List<Map> pairedValues = [];
 
   Future<void> fetchData(String keyword) async {
-    const CircularProgressIndicator();
     if (keyword == '') {
       return await showErrorDialog(
         context,
@@ -121,7 +122,9 @@ class _SearchViewState extends State<SearchView> {
         'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',
       );
     }
-    setState(() {}); // Refresh the UI after fetching data
+    setState(() {
+      _isEmpty = false;
+    }); // Refresh the UI after fetching data
   }
 
   String fontFamilySelectedValue = 'Roboto';
@@ -282,243 +285,291 @@ class _SearchViewState extends State<SearchView> {
                   const SizedBox(
                     height: 10,
                   ),
-                  // Results ListView
-                  Expanded(
-                    child: ListView.builder(
-                      primary: false,
-                      controller: _scrollController,
-                      itemCount: pairedValues.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        Map hadith = pairedValues[index];
-                        String hadithText = hadith['hadith'];
-                        String hadithInfo =
-                            'الراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
-                        String hadithId = hadith['hadithId'];
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(10),
-                              padding: paddingSelectedValue,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
-                                borderRadius: BorderRadius.circular(30),
+                  _isEmpty
+                      ? Container(
+                          margin: const EdgeInsets.all(20),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 100,
                               ),
-                              child: Column(
+                              Icon(
+                                Icons.search,
+                                size: 140,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'تأكد من صحة الأحاديث',
+                                style: TextStyle(
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : // Results ListView
+                      Expanded(
+                          child: ListView.builder(
+                            primary: false,
+                            controller: _scrollController,
+                            itemCount: pairedValues.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              Map hadith = pairedValues[index];
+                              String hadithText = hadith['hadith'];
+                              String hadithInfo =
+                                  'الراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
+                              String hadithId = hadith['hadithId'];
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SelectableText(
-                                    '$hadithText\n\n$hadithInfo',
-                                    style: TextStyle(
+                                  Container(
+                                    margin: const EdgeInsets.all(10),
+                                    padding: paddingSelectedValue,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .secondaryContainer,
-                                      fontSize: fontSizeSelectedValue,
-                                      fontWeight: fontWeightSelectedValue,
-                                      fontFamily: fontFamilySelectedValue,
+                                          .primaryContainer,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        SelectableText(
+                                          '$hadithText\n\n$hadithInfo',
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryContainer,
+                                            fontSize: fontSizeSelectedValue,
+                                            fontWeight: fontWeightSelectedValue,
+                                            fontFamily: fontFamilySelectedValue,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              height: 45,
+                                              child: ElevatedButton.icon(
+                                                onPressed: () async {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                          const SnackBar(
+                                                    content: Text(
+                                                        'جارِ البحث عن الشرح...'),
+                                                    duration:
+                                                        Duration(seconds: 5),
+                                                  ));
+                                                  try {
+                                                    var url = Uri.parse(
+                                                        'https://dorar-hadith-api.cyclic.app/v1/site/sharh/text/$hadithText');
+                                                    var response = await http
+                                                        .get(url)
+                                                        .timeout(const Duration(
+                                                            seconds: 16));
+                                                    var decodedBody =
+                                                        utf8.decode(
+                                                            response.bodyBytes);
+                                                    var jsonResponse = json
+                                                        .decode(decodedBody);
+
+                                                    return await showErrorDialog(
+                                                      context,
+                                                      'الشرح',
+                                                      jsonResponse['data']
+                                                              ['sharhMetadata']
+                                                          ['sharh'],
+                                                    );
+                                                  } on http.ClientException {
+                                                    return await showErrorDialog(
+                                                      context,
+                                                      'خطأ بالإتصال بالإنترنت',
+                                                      'تأكد من إتصالك بالإنترنت وأعد المحاولة',
+                                                    );
+                                                  } on TimeoutException {
+                                                    return await showErrorDialog(
+                                                      context,
+                                                      'نفذ الوقت',
+                                                      'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',
+                                                    );
+                                                  }
+                                                },
+                                                icon: const Icon(
+                                                  Icons.manage_search,
+                                                  size: 25,
+                                                ),
+                                                label: const Text(
+                                                  'الشرح',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            SizedBox(
+                                              height: 45,
+                                              child: ElevatedButton.icon(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SimilarHadithView(
+                                                              hadithId:
+                                                                  hadithId,
+                                                            )),
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                  Icons.content_paste_go,
+                                                  size: 25,
+                                                ),
+                                                label: const Text(
+                                                  'أحاديث مشابهة',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              height: 45,
+                                              child: ElevatedButton.icon(
+                                                onPressed: () async {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                          const SnackBar(
+                                                    content: Text('تم النسخ'),
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                  ));
+                                                  await copyHadith(index);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.copy,
+                                                  size: 25,
+                                                ),
+                                                label: const Text(
+                                                  'نسخ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            SizedBox(
+                                              height: 45,
+                                              child: ElevatedButton.icon(
+                                                onPressed: () async {
+                                                  var dbHadithId =
+                                                      await sqlDb.selectData(
+                                                          "SELECT * FROM 'favourites'");
+                                                  for (var row in dbHadithId) {
+                                                    if (row['hadithid'] ==
+                                                        hadithId) {
+                                                      await sqlDb.deleteData(
+                                                          "DELETE FROM 'favourites' WHERE id = ${row['id']}");
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              const SnackBar(
+                                                        content: Text(
+                                                            'تم إزالة الحديث من المفضلة'),
+                                                        duration: Duration(
+                                                            seconds: 3),
+                                                      ));
+                                                      _onFavButtonPressed(
+                                                          index);
+                                                      return;
+                                                    }
+                                                  }
+                                                  await sqlDb.insertData(
+                                                      "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('$hadithText', '$hadithInfo', '$hadithId')");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                          const SnackBar(
+                                                    content: Text(
+                                                        'تم إضافة الحديث إلي المفضلة'),
+                                                    duration:
+                                                        Duration(seconds: 3),
+                                                  ));
+                                                  _onFavButtonPressed(index);
+                                                },
+                                                icon: Icon(
+                                                  isFavButtonPressedList[index]
+                                                      ? Icons.star
+                                                      : Icons.star_border,
+                                                  size: 25,
+                                                ),
+                                                label: Text(
+                                                  isFavButtonPressedList[index]
+                                                      ? 'أزل من المفضلة'
+                                                      : 'أضف إلي المفضلة',
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 45,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () async {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'جارِ البحث عن الشرح...'),
-                                              duration: Duration(seconds: 5),
-                                            ));
-                                            try {
-                                              var url = Uri.parse(
-                                                  'https://dorar-hadith-api.cyclic.app/v1/site/sharh/text/$hadithText');
-                                              var response = await http
-                                                  .get(url)
-                                                  .timeout(const Duration(
-                                                      seconds: 16));
-                                              var decodedBody = utf8
-                                                  .decode(response.bodyBytes);
-                                              var jsonResponse =
-                                                  json.decode(decodedBody);
-
-                                              return await showErrorDialog(
-                                                context,
-                                                'الشرح',
-                                                jsonResponse['data']
-                                                    ['sharhMetadata']['sharh'],
-                                              );
-                                            } on http.ClientException {
-                                              return await showErrorDialog(
-                                                context,
-                                                'خطأ بالإتصال بالإنترنت',
-                                                'تأكد من إتصالك بالإنترنت وأعد المحاولة',
-                                              );
-                                            } on TimeoutException {
-                                              return await showErrorDialog(
-                                                context,
-                                                'نفذ الوقت',
-                                                'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',
-                                              );
-                                            }
-                                          },
-                                          icon: const Icon(
-                                            Icons.manage_search,
-                                            size: 25,
-                                          ),
-                                          label: const Text(
-                                            'الشرح',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      SizedBox(
-                                        height: 45,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SimilarHadithView(
-                                                        hadithId: hadithId,
-                                                      )),
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.content_paste_go,
-                                            size: 25,
-                                          ),
-                                          label: const Text(
-                                            'أحاديث مشابهة',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 45,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () async {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text('تم النسخ'),
-                                              duration: Duration(seconds: 2),
-                                            ));
-                                            await copyHadith(index);
-                                          },
-                                          icon: const Icon(
-                                            Icons.copy,
-                                            size: 25,
-                                          ),
-                                          label: const Text(
-                                            'نسخ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      SizedBox(
-                                        height: 45,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () async {
-                                            var dbHadithId =
-                                                await sqlDb.selectData(
-                                                    "SELECT * FROM 'favourites'");
-                                            for (var row in dbHadithId) {
-                                              if (row['hadithid'] == hadithId) {
-                                                await sqlDb.deleteData(
-                                                    "DELETE FROM 'favourites' WHERE id = ${row['id']}");
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        const SnackBar(
-                                                  content: Text(
-                                                      'تم إزالة الحديث من المفضلة'),
-                                                  duration:
-                                                      Duration(seconds: 3),
-                                                ));
-                                                _onFavButtonPressed(index);
-                                                return;
-                                              }
-                                            }
-                                            await sqlDb.insertData(
-                                                "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('$hadithText', '$hadithInfo', '$hadithId')");
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'تم إضافة الحديث إلي المفضلة'),
-                                              duration: Duration(seconds: 3),
-                                            ));
-                                            _onFavButtonPressed(index);
-                                          },
-                                          icon: Icon(
-                                            isFavButtonPressedList[index]
-                                                ? Icons.star
-                                                : Icons.star_border,
-                                            size: 25,
-                                          ),
-                                          label: Text(
-                                            isFavButtonPressedList[index]
-                                                ? 'أزل من المفضلة'
-                                                : 'أضف إلي المفضلة',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
       ),
