@@ -164,7 +164,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                 children: [
                   _isEmpty
                       ? Container(
-                          margin: const EdgeInsets.all(30),
+                          margin: const EdgeInsets.all(20),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -173,7 +173,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                               ),
                               Icon(
                                 Icons.star_border,
-                                size: 100,
+                                size: 140,
                               ),
                               SizedBox(
                                 height: 15,
@@ -181,7 +181,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                               Text(
                                 'لم يتم إضافة أحاديث للمفضلة',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 23,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
