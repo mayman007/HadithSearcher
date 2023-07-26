@@ -120,27 +120,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 },
               ),
             ),
-            Divider(
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            Container(
-              height: 50,
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: ListTile(
-                  leading: const Icon(Icons.update),
-                  title: const Text(
-                    'تحقق من التحديثات',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () {}),
-            ),
           ],
         ),
       );
