@@ -103,7 +103,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
       } else {
         pairedValues = [];
 
-        int current = 1;
+        int current = -1;
         for (Map hadith in jsonResponse['data']) {
           current += 1;
           pairedValues.add(hadith);
@@ -379,6 +379,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                         height: 45,
                                         child: ElevatedButton.icon(
                                           onPressed: () async {
+                                            print('hadithId $hadithId');
                                             var dbHadithId =
                                                 await sqlDb.selectData(
                                                     "SELECT * FROM 'favourites'");

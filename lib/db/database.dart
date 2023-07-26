@@ -26,8 +26,8 @@ class DatabaseHelper {
     await db.execute('''
     CREATE TABLE 'favourites' (
       'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-      'hadithtext' TEXT NOT NULL UNIQUE,
-      'hadithinfo' TEXT NOT NULL UNIQUE,
+      'hadithtext' TEXT NOT NULL,
+      'hadithinfo' TEXT NOT NULL,
       'hadithid' TEXT NOT NULL UNIQUE
     )
 ''');
