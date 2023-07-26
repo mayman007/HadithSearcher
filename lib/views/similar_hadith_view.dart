@@ -105,13 +105,11 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
 
         int current = 1;
         for (Map hadith in jsonResponse['data']) {
-          pairedValues.add(hadith);
           current += 1;
           pairedValues.add(hadith);
           var favHadiths = await sqlDb.selectData("SELECT * FROM 'favourites'");
           for (var row in favHadiths) {
-            if (row['hadithid'] == hadith['hadithId'] &&
-                row['hadithtext'] == hadith['hadith']) {
+            if (row['hadithid'] == hadith['hadithId']) {
               setState(() {
                 isFavButtonPressedList[current] = true;
               });
