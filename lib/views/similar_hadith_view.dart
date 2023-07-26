@@ -22,7 +22,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
   bool _showBackToTopButton = false;
   late ScrollController _scrollController;
 
-  List<bool> isFavButtonPressedList = List.generate(30, (_) => false);
+  List<bool> isFavButtonPressedList = List.generate(300, (_) => false);
 
   void _onFavButtonPressed(int index) {
     setState(() {
@@ -110,7 +110,8 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
           pairedValues.add(hadith);
           var favHadiths = await sqlDb.selectData("SELECT * FROM 'favourites'");
           for (var row in favHadiths) {
-            if (row['hadithid'] == hadith['hadithId']) {
+            if (row['hadithid'] == hadith['hadithId'] &&
+                row['hadithtext'] == hadith['hadith']) {
               setState(() {
                 isFavButtonPressedList[current] = true;
               });
