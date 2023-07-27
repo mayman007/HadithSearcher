@@ -13,8 +13,6 @@ void main() async {
   DatabaseHelper sqlDb = DatabaseHelper();
   await sqlDb.initialDb();
   final theme = await sqlDb.getTheme();
-
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(HomePage(theme: theme));
 }
 
