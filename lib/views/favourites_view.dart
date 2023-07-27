@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hadithsearcher/utilities/show_navigation_drawer.dart';
-import 'package:hadithsearcher/views/search_view.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
+import '../constants/routes.dart';
 import '../db/database.dart';
 import '../utilities/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -155,11 +155,8 @@ class _FavouritesViewState extends State<FavouritesView> {
   @override
   Widget build(BuildContext context) {
     Future<bool> onBackPressed() async {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => const SearchView(), // Destination
-        ),
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        searchRoute,
         (route) => false,
       );
       return true;

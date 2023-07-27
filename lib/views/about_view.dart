@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hadithsearcher/views/search_view.dart';
+import '../constants/routes.dart';
 import '../utilities/show_navigation_drawer.dart';
 
 class AboutView extends StatefulWidget {
@@ -11,11 +11,8 @@ class AboutView extends StatefulWidget {
 
 class _AboutViewState extends State<AboutView> {
   Future<bool> _onBackPressed() async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => const SearchView(), // Destination
-      ),
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      searchRoute,
       (route) => false,
     );
     return true;
