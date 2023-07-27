@@ -561,7 +561,7 @@ class _SearchViewState extends State<SearchView> {
                       : Column(
                           children: [
                             const SizedBox(
-                              height: 12,
+                              height: 10,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -590,6 +590,13 @@ class _SearchViewState extends State<SearchView> {
                                             BorderRadius.circular(30.0),
                                       ),
                                     ),
+                                  ),
+                                ),
+                                Text(
+                                  '$searchPagaNumber',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 SizedBox(
@@ -623,6 +630,9 @@ class _SearchViewState extends State<SearchView> {
                                 ),
                               ],
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                           ],
                         )
                 ],
@@ -630,15 +640,18 @@ class _SearchViewState extends State<SearchView> {
       ),
       floatingActionButton: _showBackToTopButton == false
           ? null
-          : FloatingActionButton(
-              onPressed: () {
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.linear,
-                );
-              },
-              child: const Icon(Icons.arrow_upward),
+          : Container(
+              margin: const EdgeInsets.symmetric(vertical: 60),
+              child: FloatingActionButton(
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.linear,
+                  );
+                },
+                child: const Icon(Icons.arrow_upward),
+              ),
             ),
       drawer: const MyNavigationDrawer(),
     );
