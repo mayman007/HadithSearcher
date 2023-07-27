@@ -202,6 +202,10 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
+    // To adjust search's textfield based on screen's width
+    double screenWidth = MediaQuery.of(context).size.width;
+    double textFieldWidth = screenWidth * 0.6;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -218,13 +222,10 @@ class _SearchViewState extends State<SearchView> {
             : Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
                       SizedBox(
-                        width: 220,
+                        width: textFieldWidth,
                         height: 60,
                         // Search TextField
                         child: TextField(
@@ -250,11 +251,7 @@ class _SearchViewState extends State<SearchView> {
                           },
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
                       SizedBox(
-                        // width: 105,
                         height: 60,
                         // Search button
                         child: ElevatedButton.icon(
@@ -262,10 +259,7 @@ class _SearchViewState extends State<SearchView> {
                             Icons.search,
                             size: 30.0,
                           ),
-                          label: const Text(
-                            'بحث',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                          label: const Text('بحث'),
                           onPressed: () async {
                             setState(() {
                               searchKeyword = textFieldController.text;
