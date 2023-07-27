@@ -154,7 +154,7 @@ class _FavouritesViewState extends State<FavouritesView> {
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> _onBackPressed() async {
+    Future<bool> onBackPressed() async {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -166,7 +166,7 @@ class _FavouritesViewState extends State<FavouritesView> {
     }
 
     return WillPopScope(
-      onWillPop: _onBackPressed,
+      onWillPop: onBackPressed,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('المفضلة'),
