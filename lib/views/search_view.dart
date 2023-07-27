@@ -70,8 +70,12 @@ class _SearchViewState extends State<SearchView> {
 
   List<Map> pairedValues = [];
 
-  Future<void> fetchData(String keyword) async {
-    if (keyword == '') {
+  String searchKeyword = '';
+
+  int searchPagaNumber = 1;
+
+  Future<void> fetchData() async {
+    if (searchKeyword == '') {
       return await showErrorDialog(
         context,
         'أكتب شئ',
@@ -80,7 +84,7 @@ class _SearchViewState extends State<SearchView> {
     }
     try {
       var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$keyword');
+          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber');
       var response = await http.get(url).timeout(const Duration(seconds: 32));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
@@ -233,11 +237,12 @@ class _SearchViewState extends State<SearchView> {
                           ),
                           onSubmitted: (value) async {
                             setState(() {
+                              searchKeyword = textFieldController.text;
                               _isLoading =
                                   true; // Display CircularProgressIndicator
                               _showBackToTopButton = false;
                             });
-                            await fetchData(textFieldController.text);
+                            await fetchData();
                             setState(() {
                               _isLoading =
                                   false; // Hide CircularProgressIndicator
@@ -263,11 +268,12 @@ class _SearchViewState extends State<SearchView> {
                           ),
                           onPressed: () async {
                             setState(() {
+                              searchKeyword = textFieldController.text;
                               _isLoading =
                                   true; // Display CircularProgressIndicator
                               _showBackToTopButton = false;
                             });
-                            await fetchData(textFieldController.text);
+                            await fetchData();
                             setState(() {
                               _isLoading =
                                   false; // Hide CircularProgressIndicator
@@ -550,6 +556,75 @@ class _SearchViewState extends State<SearchView> {
                             },
                           ),
                         ),
+                  _isEmpty
+                      ? const Text('')
+                      : Column(
+                          children: [
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  height: 45,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      setState(() {
+                                        searchPagaNumber = searchPagaNumber + 1;
+                                        _isLoading =
+                                            true; // Display CircularProgressIndicator
+                                        _showBackToTopButton = false;
+                                      });
+                                      await fetchData();
+                                      setState(() {
+                                        _isLoading =
+                                            false; // Hide CircularProgressIndicator
+                                      });
+                                    },
+                                    icon: const Icon(Icons.arrow_back),
+                                    label: const Text('الصفحة التالية'),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 45,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      if (searchPagaNumber > 1) {
+                                        setState(() {
+                                          searchPagaNumber =
+                                              searchPagaNumber - 1;
+                                          _isLoading =
+                                              true; // Display CircularProgressIndicator
+                                          _showBackToTopButton = false;
+                                        });
+                                        await fetchData();
+                                        setState(() {
+                                          _isLoading =
+                                              false; // Hide CircularProgressIndicator
+                                        });
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_forward),
+                                    label: const Text('الصفحة السابقة'),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
                 ],
               ),
       ),
