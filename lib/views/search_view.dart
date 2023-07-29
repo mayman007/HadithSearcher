@@ -145,7 +145,7 @@ class _SearchViewState extends State<SearchView> {
         searchBook = '96';
       }
       var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook');
+          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
       print(url);
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
@@ -304,6 +304,8 @@ class _SearchViewState extends State<SearchView> {
     'صحيح مسلم',
     'الصحيح المسند',
   ];
+
+  String searchExcludedWords = '';
 
   bool isAdvancedSearchEnabled = false;
 
@@ -829,6 +831,36 @@ class _SearchViewState extends State<SearchView> {
                                       ),
                                     ],
                                   ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    SizedBox(
+                                      width: 250,
+                                      height: 60,
+                                      child: TextField(
+                                        decoration: const InputDecoration(
+                                          hintText:
+                                              'كلمة أو جملة تريد استبعادها من البحث',
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            searchExcludedWords =
+                                                '&xclude=$value';
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
