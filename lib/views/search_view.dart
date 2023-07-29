@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:in_app_update/in_app_update.dart';
 import 'dart:async';
 import 'dart:convert';
 import '../utilities/show_error_dialog.dart';
@@ -35,8 +36,41 @@ class _SearchViewState extends State<SearchView> {
     });
   }
 
+  void checkForUpdate() async {
+    // Get the latest update information.
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+
+    // If there is a new update available, show a dialog to the user.
+    updateInfo.updateAvailability == UpdateAvailability.updateAvailable
+        ? () {
+            showForceUpdateDialog(updateInfo);
+          }
+        : print('no update available');
+  }
+
+  void showForceUpdateDialog(AppUpdateInfo updateInfo) {
+    // Create a dialog to show the user.
+    AlertDialog dialog = AlertDialog(
+      title: const Text('تحديث جديد'),
+      content: const Text('يوجد تحديث جديد في المتجر, الرجاء التحديث.'),
+      actions: [
+        // Force the user to update the app.
+        TextButton(
+          child: const Text('تحديث'),
+          onPressed: () {
+            InAppUpdate.performImmediateUpdate();
+          },
+        ),
+      ],
+    );
+
+    // Show the dialog to the user.
+    showDialog(context: context, builder: (context) => dialog);
+  }
+
   @override
   void initState() {
+    checkForUpdate();
     _scrollController = ScrollController()
       ..addListener(() {
         setState(() {
@@ -146,7 +180,6 @@ class _SearchViewState extends State<SearchView> {
       }
       var url = Uri.parse(
           'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
-      print(url);
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);

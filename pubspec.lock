@@ -165,6 +165,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.17"
+  in_app_update:
+    dependency: "direct main"
+    description:
+      name: in_app_update
+      sha256: a220c46e649ae6cfaa80ea6688efb22e73eaa9ec538d8666f5814cc04c08a696
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.4"
   intl:
     dependency: transitive
     description:
