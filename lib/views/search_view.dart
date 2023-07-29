@@ -152,6 +152,11 @@ class _SearchViewState extends State<SearchView> {
       var jsonResponse = json.decode(decodedBody);
 
       if (jsonResponse['metadata']['length'] == 0) {
+        if (searchPagaNumber > 1) {
+          setState(() {
+            searchPagaNumber -= 1;
+          });
+        }
         return await showErrorDialog(
           context,
           'لا توجد نتائج',
@@ -939,14 +944,6 @@ class _SearchViewState extends State<SearchView> {
                                               height: 45,
                                               child: ElevatedButton.icon(
                                                 onPressed: () async {
-                                                  // ScaffoldMessenger.of(context)
-                                                  //     .showSnackBar(
-                                                  //         const SnackBar(
-                                                  //   content: Text(
-                                                  //       'جارِ البحث عن الشرح...'),
-                                                  //   duration:
-                                                  //       Duration(seconds: 5),
-                                                  // ));
                                                   try {
                                                     if (hadith[
                                                             'hasSharhMetadata'] ==
