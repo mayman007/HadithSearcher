@@ -262,42 +262,33 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                     height: 45,
                                     child: ElevatedButton.icon(
                                       onPressed: () async {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                          content:
-                                              Text('جارِ البحث عن الشرح...'),
-                                          duration: Duration(seconds: 5),
-                                        ));
                                         try {
-                                          var url = Uri.parse(
-                                              'https://dorar-hadith-api.cyclic.app/v1/site/sharh/text/${hadith['hadith']}');
-                                          var response = await http
-                                              .get(url)
-                                              .timeout(
-                                                  const Duration(seconds: 16));
-                                          var decodedBody =
-                                              utf8.decode(response.bodyBytes);
-                                          var jsonResponse =
-                                              json.decode(decodedBody);
+                                          if (hadith['hasSharhMetadata'] ==
+                                              true) {
+                                            var url = Uri.parse(
+                                                "https://dorar-hadith-api.cyclic.app/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                            var response = await http
+                                                .get(url)
+                                                .timeout(
+                                                    const Duration(seconds: 8));
+                                            var decodedBody =
+                                                utf8.decode(response.bodyBytes);
+                                            var jsonResponse =
+                                                json.decode(decodedBody);
 
-                                          AlertDialog(
-                                            content: Text(jsonResponse['data']
-                                                ['sharhMetadata']['sharh']),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text('إغلاق'),
-                                              )
-                                            ],
-                                          );
-                                          return await showErrorDialog(
-                                            context,
-                                            'الشرح',
-                                            jsonResponse['data']
-                                                ['sharhMetadata']['sharh'],
-                                          );
+                                            return await showErrorDialog(
+                                              context,
+                                              'الشرح',
+                                              jsonResponse['data']
+                                                  ['sharhMetadata']['sharh'],
+                                            );
+                                          } else {
+                                            return await showErrorDialog(
+                                              context,
+                                              'الشرح',
+                                              'لم يتم إيجاد شرح لهذا الحديث',
+                                            );
+                                          }
                                         } on http.ClientException {
                                           return await showErrorDialog(
                                             context,
