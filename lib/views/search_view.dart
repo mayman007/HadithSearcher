@@ -367,6 +367,7 @@ class _SearchViewState extends State<SearchView> {
           IconButton(
             onPressed: () {
               setState(() {
+                _showBackToTopButton = false;
                 isAdvancedSearchEnabled = !isAdvancedSearchEnabled;
               });
             },
