@@ -49,12 +49,12 @@ dependencies:
 flutter_native_splash:
  color: "#ffffff"
  color_dark: "#000000"
- image: assets/logo.png
+ image: assets/icons/logo.png
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon.jpg"
+  image_path: "assets/icons/icon.jpg"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 dev_dependencies:
@@ -81,7 +81,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/logo.png
+    - assets/icons/logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

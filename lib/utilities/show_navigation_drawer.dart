@@ -20,7 +20,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
             ),
             const Image(
               image: AssetImage(
-                'assets/logo.png',
+                'assets/icons/logo.png',
               ),
               height: 220,
             ),
