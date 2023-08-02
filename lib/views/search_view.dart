@@ -371,10 +371,10 @@ class _SearchViewState extends State<SearchView> {
               });
             },
             icon: const Icon(
-              Icons.settings,
+              Icons.filter_alt,
               size: 30,
             ),
-            tooltip: 'إعدادات البحث',
+            tooltip: 'البحث المتقدم',
           ),
         ],
       ),
@@ -460,7 +460,7 @@ class _SearchViewState extends State<SearchView> {
                                   height: 15,
                                 ),
                                 const Text(
-                                  'إعدادات البحث',
+                                  'البحث المتقدم',
                                   style: TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
