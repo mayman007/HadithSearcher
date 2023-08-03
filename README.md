@@ -1,16 +1,21 @@
-# hadithsearcher
+<div align = "center">
+<img src = "https://i.imgur.com/uwZTeVL.png" width = 200></img>
 
-A new Flutter project.
+# **Hadith Searcher**
 
-## Getting Started
+## تطبيق يسهل البحث عن الأحاديث والتحقق منها
+</div>
 
-This project is a starting point for a Flutter application.
+## المميزات:
+- يظهر مئات الأحاديث كنتيجة لعملية بحث واحدة
+- القدرة على رؤية شرح الأحاديث
+- القدرة على رؤية الأحاديث المشابهة لأي حديث تريده
+- ميزة تصفية نتائج البحث حسب درجة الصحة أو بالمحدث والكثير من الإختيارات
+- إضافة الأحاديث إلى المفضلة لتراهم بسهولة في أي وقت بدون إنترنت
+- القدرة على التحكم بحجم ونوع وعرض الخط المستخدم للأحاديث
 
-A few resources to get you started if this is your first Flutter project:
+<br>
+<hr>
+<br>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+جميع الأحاديث والمعلومات مأخوذة من موقع [dorar.net](https://dorar.net/) باستخدام [الAPI الخاص بAhmed ElTabarani](https://github.com/AhmedElTabarani/dorar-hadith-api)
