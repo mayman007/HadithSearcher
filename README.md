@@ -1,5 +1,5 @@
 <div align = "center">
-<img src = "https://i.imgur.com/uwZTeVL.png" width = 200></img>
+<img src = "https://i.imgur.com/uwZTeVL.png" width = 200>
 
 # **Hadith Searcher**
 
@@ -13,6 +13,13 @@
 - ميزة تصفية نتائج البحث حسب درجة الصحة أو بالمحدث والكثير من الإختيارات
 - إضافة الأحاديث إلى المفضلة لتراهم بسهولة في أي وقت بدون إنترنت
 - القدرة على التحكم بحجم ونوع وعرض الخط المستخدم للأحاديث
+
+## صور:
+- <img src = "https://i.imgur.com/9CYRHT3.jpg" width = 300>
+- <img src = "https://i.imgur.com/xkY4Cux.jpg" width = 300>
+- <img src = "https://i.imgur.com/9yychri.jpg" width = 300>
+- <img src = "https://i.imgur.com/9oWZvGJ.jpg" width = 300>
+- <img src = "https://i.imgur.com/shy5R7j.jpg" width = 300>
 
 <br>
 <hr>
