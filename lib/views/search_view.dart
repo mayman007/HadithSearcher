@@ -179,7 +179,7 @@ class _SearchViewState extends State<SearchView> {
         searchBook = '96';
       }
       var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
+          'https://dorar-hadith-api.cyclic.cloud/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
@@ -983,7 +983,7 @@ class _SearchViewState extends State<SearchView> {
                                                             'hasSharhMetadata'] ==
                                                         true) {
                                                       var url = Uri.parse(
-                                                          "https://dorar-hadith-api.cyclic.app/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                          "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                                       var response = await http
                                                           .get(url)
                                                           .timeout(

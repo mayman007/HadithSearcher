@@ -249,7 +249,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                                           'hasSharhMetadata'] ==
                                                       true) {
                                                     var url = Uri.parse(
-                                                        "https://dorar-hadith-api.cyclic.app/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                        "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                                     var response = await http
                                                         .get(url)
                                                         .timeout(const Duration(
