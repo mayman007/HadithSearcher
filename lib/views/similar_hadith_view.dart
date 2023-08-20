@@ -89,7 +89,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
     }
     try {
       var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.app/v1/site/hadith/similar/$hadithId');
+          'https://dorar-hadith-api.cyclic.cloud/v1/site/hadith/similar/$hadithId');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
@@ -266,7 +266,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                           if (hadith['hasSharhMetadata'] ==
                                               true) {
                                             var url = Uri.parse(
-                                                "https://dorar-hadith-api.cyclic.app/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                             var response = await http
                                                 .get(url)
                                                 .timeout(
