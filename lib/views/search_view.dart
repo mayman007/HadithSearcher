@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
@@ -902,7 +903,7 @@ class _SearchViewState extends State<SearchView> {
                                   ],
                                 ),
                               ],
-                            ),
+                            ).animate().fade(duration: 200.ms),
                           ),
                         )
                       : _isEmpty
@@ -1187,7 +1188,7 @@ class _SearchViewState extends State<SearchView> {
                                         ),
                                       ],
                                     ),
-                                  );
+                                  ).animate().fade(duration: 200.ms);
                                 },
                               ),
                             ),
