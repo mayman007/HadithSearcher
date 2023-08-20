@@ -113,28 +113,9 @@ class _AboutViewState extends State<AboutView> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      iconSize: 35,
-                      tooltip: 'الكود المصدري',
-                      onPressed: () async {
-                        await _launchUrl(Uri.parse(
-                            'https://github.com/Shinobi7k/HadithSearcher'));
-                      },
-                      icon: const Icon(
-                        Icons.code,
-                      ),
-                      alignment: Alignment.center,
-                    ),
-                    const Text('الكود المصدري'),
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
+                Divider(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  thickness: 2,
                 ),
                 Container(
                   margin: const EdgeInsets.all(10),
