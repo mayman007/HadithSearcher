@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/utilities/show_navigation_drawer.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
@@ -430,7 +431,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                   ),
                                 );
                               },
-                            ),
+                            ).animate().fade(duration: 200.ms),
                           ),
                   ],
                 ),

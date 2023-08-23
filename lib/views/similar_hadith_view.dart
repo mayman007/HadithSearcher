@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -419,7 +420,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                           ),
                         );
                       },
-                    ),
+                    ).animate().fade(duration: 200.ms),
                   ),
                 ],
               ),

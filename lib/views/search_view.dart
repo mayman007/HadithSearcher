@@ -1191,9 +1191,9 @@ class _SearchViewState extends State<SearchView> {
                                         ),
                                       ],
                                     ),
-                                  ).animate().fade(duration: 200.ms);
+                                  );
                                 },
-                              ),
+                              ).animate().fade(duration: 200.ms),
                             ),
                   _isEmpty
                       ? const Text('')
