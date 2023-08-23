@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,8 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   DatabaseHelper sqlDb = DatabaseHelper();
+
+  String hadithApiBaseUrl = dotenv.env['HADITH_API_BASE_URL']!;
 
   bool _isLoading = false;
 
@@ -180,7 +183,7 @@ class _SearchViewState extends State<SearchView> {
         searchBook = '96';
       }
       var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.cloud/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
+          '$hadithApiBaseUrl/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
@@ -984,7 +987,7 @@ class _SearchViewState extends State<SearchView> {
                                                             'hasSharhMetadata'] ==
                                                         true) {
                                                       var url = Uri.parse(
-                                                          "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                          "$hadithApiBaseUrl/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                                       var response = await http
                                                           .get(url)
                                                           .timeout(
