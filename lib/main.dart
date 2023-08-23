@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/views/about_view.dart';
 import 'package:hadithsearcher/views/favourites_view.dart';
 import 'package:hadithsearcher/views/search_view.dart';
@@ -13,6 +14,7 @@ void main() async {
   DatabaseHelper sqlDb = DatabaseHelper();
   await sqlDb.initialDb();
   final theme = await sqlDb.getTheme();
+  await dotenv.load(fileName: ".env");
   runApp(HomePage(theme: theme));
 }
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -16,6 +18,8 @@ class SimilarHadithView extends StatefulWidget {
 
 class _SimilarHadithViewState extends State<SimilarHadithView> {
   DatabaseHelper sqlDb = DatabaseHelper();
+
+  String hadithApiBaseUrl = dotenv.env['HADITH_API_BASE_URL']!;
 
   bool _isLoading = false;
 
@@ -88,8 +92,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
       );
     }
     try {
-      var url = Uri.parse(
-          'https://dorar-hadith-api.cyclic.cloud/v1/site/hadith/similar/$hadithId');
+      var url = Uri.parse('$hadithApiBaseUrl/v1/site/hadith/similar/$hadithId');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonResponse = json.decode(decodedBody);
@@ -266,7 +269,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                                           if (hadith['hasSharhMetadata'] ==
                                               true) {
                                             var url = Uri.parse(
-                                                "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                "$hadithApiBaseUrl/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                             var response = await http
                                                 .get(url)
                                                 .timeout(
@@ -417,7 +420,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                           ),
                         );
                       },
-                    ),
+                    ).animate().fade(duration: 200.ms),
                   ),
                 ],
               ),

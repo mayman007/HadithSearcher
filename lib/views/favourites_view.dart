@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/utilities/show_navigation_drawer.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import '../constants/routes.dart';
@@ -18,6 +20,8 @@ class FavouritesView extends StatefulWidget {
 
 class _FavouritesViewState extends State<FavouritesView> {
   DatabaseHelper sqlDb = DatabaseHelper();
+
+  String hadithApiBaseUrl = dotenv.env['HADITH_API_BASE_URL']!;
 
   bool _isLoading = false;
 
@@ -249,7 +253,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                                           'hasSharhMetadata'] ==
                                                       true) {
                                                     var url = Uri.parse(
-                                                        "https://dorar-hadith-api.cyclic.cloud/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                        "$hadithApiBaseUrl/v1/site/sharh/${hadith['sharhMetadata']['id']}");
                                                     var response = await http
                                                         .get(url)
                                                         .timeout(const Duration(
@@ -427,7 +431,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                   ),
                                 );
                               },
-                            ),
+                            ).animate().fade(duration: 200.ms),
                           ),
                   ],
                 ),
