@@ -149,18 +149,48 @@ class _AboutViewState extends State<AboutView> {
                           )
                         ],
                       ),
-                      GestureDetector(
-                        child: const Text(
-                          'https://github.com/Shinobi7k',
-                          style: TextStyle(
-                            fontSize: 20,
-                            decoration: TextDecoration.underline,
-                            color: Colors.blue,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            child: const Text(
+                              'Github',
+                              style: TextStyle(
+                                fontSize: 20,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            onTap: () {
+                              _launchUrl(
+                                  Uri.parse('https://github.com/MoAymanDev'));
+                            },
                           ),
-                        ),
-                        onTap: () {
-                          _launchUrl(Uri.parse('https://github.com/Shinobi7k'));
-                        },
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          const Text(
+                            '・',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          GestureDetector(
+                            child: const Text(
+                              'Twitter',
+                              style: TextStyle(
+                                fontSize: 20,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            onTap: () {
+                              _launchUrl(
+                                  Uri.parse('https://twitter.com/MoAymanDev'));
+                            },
+                          ),
+                        ],
                       ),
                       GestureDetector(
                         child: const Text(
