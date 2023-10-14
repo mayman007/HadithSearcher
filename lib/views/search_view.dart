@@ -934,7 +934,7 @@ class _SearchViewState extends State<SearchView> {
                                   ),
                                 ],
                               ),
-                            )
+                            ).animate().fade(duration: 200.ms)
                           : // Results ListView
                           Expanded(
                               child: ListView.builder(
