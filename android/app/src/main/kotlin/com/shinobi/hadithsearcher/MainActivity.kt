@@ -1,4 +1,4 @@
-package com.shinobi.hadithsearcher
+package com.moaymandev.hadithsearcher
 
 import io.flutter.embedding.android.FlutterActivity
 
