@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 
 class HadithContainer extends StatefulWidget {
   final EdgeInsets paddingSelectedValue;
@@ -65,11 +66,19 @@ class _HadithContainerState extends State<HadithContainer> {
     super.initState();
   }
 
-  Future copyHadith(int index) async {
+  Future shareHadith(int index) async {
     var hadith = widget.hadith;
-    var hadithText =
+    String hadithText =
         '${hadith['hadith']}\n\nالراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
-    await Clipboard.setData(ClipboardData(text: hadithText));
+
+    final result = await Share.shareWithResult(hadithText);
+
+    if (result.status == ShareResultStatus.success) {
+      Fluttertoast.showToast(
+        msg: 'تم المشاركة',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
   }
 
   @override
@@ -197,18 +206,14 @@ class _HadithContainerState extends State<HadithContainer> {
                   height: 45,
                   child: ElevatedButton.icon(
                     onPressed: () async {
-                      Fluttertoast.showToast(
-                        msg: 'تم النسخ',
-                        toastLength: Toast.LENGTH_SHORT,
-                      );
-                      await copyHadith(widget.index);
+                      await shareHadith(widget.index);
                     },
                     icon: const Icon(
-                      Icons.copy,
+                      Icons.share_rounded,
                       size: 25,
                     ),
                     label: const Text(
-                      'نسخ',
+                      'مشاركة',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
