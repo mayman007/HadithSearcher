@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/routes.dart';
-import '../utilities/show_navigation_drawer.dart';
+import '../widgets/show_navigation_drawer.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({super.key});
