@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hadithsearcher/widgets/show_error_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/db/database.dart';
@@ -197,10 +197,10 @@ class _HadithContainerState extends State<HadithContainer> {
                   height: 45,
                   child: ElevatedButton.icon(
                     onPressed: () async {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('تم النسخ'),
-                        duration: Duration(seconds: 2),
-                      ));
+                      Fluttertoast.showToast(
+                        msg: 'تم النسخ',
+                        toastLength: Toast.LENGTH_SHORT,
+                      );
                       await copyHadith(widget.index);
                     },
                     icon: const Icon(
@@ -231,21 +231,20 @@ class _HadithContainerState extends State<HadithContainer> {
                         if (row['hadithid'] == widget.hadithId) {
                           await sqlDb.deleteData(
                               "DELETE FROM 'favourites' WHERE id = ${row['id']}");
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('تم إزالة الحديث من المفضلة'),
-                            duration: Duration(seconds: 3),
-                          ));
+                          Fluttertoast.showToast(
+                            msg: 'تم إزالة الحديث من المفضلة',
+                            toastLength: Toast.LENGTH_SHORT,
+                          );
                           _onFavButtonPressed(widget.index);
                           return;
                         }
                       }
                       await sqlDb.insertData(
                           "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('${widget.hadithText}', '${widget.hadithInfo}', '${widget.hadithId}')");
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('تم إضافة الحديث إلي المفضلة'),
-                        duration: Duration(seconds: 3),
-                      ));
+                      Fluttertoast.showToast(
+                        msg: 'تم إضافة الحديث إلي المفضلة',
+                        toastLength: Toast.LENGTH_SHORT,
+                      );
                       _onFavButtonPressed(widget.index);
                     },
                     icon: Icon(
