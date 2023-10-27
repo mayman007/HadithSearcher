@@ -219,6 +219,23 @@ class _AboutViewState extends State<AboutView> {
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 15,
+                ),
+                GestureDetector(
+                  child: const Text(
+                    'سياسة الخصوصية',
+                    style: TextStyle(
+                      fontSize: 18,
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  onTap: () {
+                    _launchUrl(Uri.parse(
+                        'https://hadith-searcher-privacy-policy.pages.dev/'));
+                  },
+                )
               ],
             ),
           ),
