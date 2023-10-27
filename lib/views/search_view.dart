@@ -183,7 +183,7 @@ class _SearchViewState extends State<SearchView> {
         return await showErrorDialog(
           context,
           'لا توجد نتائج',
-          'إستخدم كلمات أو إعدادات أخرى',
+          'استخدم كلمات أو إعدادات أخرى',
         );
       } else {
         pairedValues = [];

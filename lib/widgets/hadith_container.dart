@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hadithsearcher/widgets/show_error_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -127,10 +126,9 @@ class _HadithContainerState extends State<HadithContainer> {
                             jsonResponse['data']['sharhMetadata']['sharh'],
                           );
                         } else {
-                          return await showErrorDialog(
-                            context,
-                            'الشرح',
-                            'لم يتم إيجاد شرح لهذا الحديث',
+                          Fluttertoast.showToast(
+                            msg: 'فشل البحث عن شرح',
+                            toastLength: Toast.LENGTH_SHORT,
                           );
                         }
                       } on http.ClientException {

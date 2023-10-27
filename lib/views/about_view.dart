@@ -96,6 +96,9 @@ class _AboutViewState extends State<AboutView> {
                           _launchUrl(Uri.parse('https://dorar.net/'));
                         },
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       GestureDetector(
                         child: const Text(
                           'AhmedElTabarani API',
@@ -192,14 +195,22 @@ class _AboutViewState extends State<AboutView> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       GestureDetector(
-                        child: const Text(
-                          'mohamedayman011324@gmail.com',
-                          style: TextStyle(
-                            fontSize: 20,
-                            decoration: TextDecoration.underline,
-                            color: Colors.blue,
-                          ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'mohamedayman011324@gmail.com',
+                              style: TextStyle(
+                                fontSize: 18,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
                         ),
                         onTap: () {
                           _launchUrl(Uri.parse('mohamedayman011324@gmail.com'));
