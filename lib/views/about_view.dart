@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/routes.dart';
-import '../utilities/show_navigation_drawer.dart';
+import '../widgets/show_navigation_drawer.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({super.key});
@@ -95,6 +95,9 @@ class _AboutViewState extends State<AboutView> {
                         onTap: () {
                           _launchUrl(Uri.parse('https://dorar.net/'));
                         },
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       GestureDetector(
                         child: const Text(
@@ -192,14 +195,22 @@ class _AboutViewState extends State<AboutView> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       GestureDetector(
-                        child: const Text(
-                          'mohamedayman011324@gmail.com',
-                          style: TextStyle(
-                            fontSize: 20,
-                            decoration: TextDecoration.underline,
-                            color: Colors.blue,
-                          ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'mohamedayman011324@gmail.com',
+                              style: TextStyle(
+                                fontSize: 18,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
                         ),
                         onTap: () {
                           _launchUrl(Uri.parse('mohamedayman011324@gmail.com'));

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hadithsearcher/utilities/show_error_dialog.dart';
+import 'package:hadithsearcher/widgets/show_error_dialog.dart';
 import '../constants/routes.dart';
 import '../db/database.dart';
-import '../utilities/show_navigation_drawer.dart';
+import '../widgets/show_navigation_drawer.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
