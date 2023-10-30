@@ -116,9 +116,69 @@ class _AboutViewState extends State<AboutView> {
                     ],
                   ),
                 ),
-                Divider(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  thickness: 2,
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _launchUrl(
+                                  Uri.parse('https://ko-fi.com/moaymandev'));
+                            },
+                            icon: const Icon(Icons.attach_money_rounded),
+                            tooltip: 'دعم',
+                            iconSize: 33,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text('دعم'),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _launchUrl(Uri.parse(
+                                  'https://github.com/moaymandev/HadithSearcher'));
+                            },
+                            icon: const Icon(Icons.code_rounded),
+                            tooltip: 'الكود',
+                            iconSize: 33,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text('الكود'),
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
                 ),
                 Container(
                   margin: const EdgeInsets.all(10),
