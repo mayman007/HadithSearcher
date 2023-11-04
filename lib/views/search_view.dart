@@ -382,6 +382,7 @@ class _SearchViewState extends State<SearchView> {
                         height: 60,
                         // Search TextField
                         child: TextField(
+                          textInputAction: TextInputAction.search,
                           controller: textFieldController,
                           decoration: const InputDecoration(
                             hintText: 'تحقق من حديث...',

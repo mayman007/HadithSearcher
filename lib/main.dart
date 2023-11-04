@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
           brightness: Brightness.light,
           primary: Colors.blue,
           onPrimary: Colors.blue,
-          primaryContainer: Color.fromARGB(255, 198, 200, 204),
+          primaryContainer: Color.fromARGB(255, 225, 226, 230),
           secondaryContainer: Colors.black,
           secondary: Colors.blue,
           onSecondary: Colors.blue,
