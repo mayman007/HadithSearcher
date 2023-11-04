@@ -48,7 +48,7 @@ class _AboutViewState extends State<AboutView> {
                   height: 5,
                 ),
                 const Text(
-                  'version 1.0.0',
+                  'version 1.0.1',
                   style: TextStyle(fontSize: 18),
                 ),
                 const SizedBox(
@@ -262,7 +262,7 @@ class _AboutViewState extends State<AboutView> {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            SelectableText(
                               'mohamedayman011324@gmail.com',
                               style: TextStyle(
                                 fontSize: 18,
@@ -280,7 +280,7 @@ class _AboutViewState extends State<AboutView> {
                   ),
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 GestureDetector(
                   child: const Text(
@@ -295,7 +295,10 @@ class _AboutViewState extends State<AboutView> {
                     _launchUrl(Uri.parse(
                         'https://hadith-searcher-privacy-policy.pages.dev/'));
                   },
-                )
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),
