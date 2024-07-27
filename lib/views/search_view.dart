@@ -33,6 +33,8 @@ class _SearchViewState extends State<SearchView> {
 
   final textFieldController = TextEditingController();
 
+  final searchExcludedWordsController = TextEditingController();
+
   bool _showBackToTopButton = false;
   late ScrollController scrollController;
 
@@ -106,6 +108,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   void dispose() {
     textFieldController.dispose();
+    searchExcludedWordsController.dispose();
     scrollController.removeListener(scrollListener);
     super.dispose();
   }
@@ -968,6 +971,8 @@ class _SearchViewState extends State<SearchView> {
                                       width: 250,
                                       height: 60,
                                       child: TextField(
+                                        controller:
+                                            searchExcludedWordsController,
                                         decoration: const InputDecoration(
                                           hintText:
                                               'كلمة أو جملة تريد استبعادها من البحث',
@@ -980,6 +985,8 @@ class _SearchViewState extends State<SearchView> {
                                             searchExcludedWords =
                                                 '&xclude=$value';
                                           });
+                                          print(
+                                              "searchExcludedWords $searchExcludedWords");
                                         },
                                       ),
                                     ),
