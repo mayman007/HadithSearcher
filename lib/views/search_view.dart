@@ -181,6 +181,8 @@ class _SearchViewState extends State<SearchView> {
         searchGrade = '4';
       }
 
+      print("searchGrade $searchGrade");
+
       if (searchMohdithSelectedValue == 'جميع المحدثين') {
         searchMohdith = '0';
       } else if (searchMohdithSelectedValue == 'الإمام المالك') {
@@ -550,86 +552,86 @@ class _SearchViewState extends State<SearchView> {
                                 const SizedBox(
                                   height: 15,
                                 ),
-                                // Combobox
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 5),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryContainer,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            const Text(
-                                              'طريقة البحث',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 5),
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              // dropdown below..
-                                              child: DropdownButton<String>(
-                                                value: searchWaySelectedValue,
-                                                onChanged:
-                                                    (String? newValue) async {
-                                                  setState(
-                                                    () {
-                                                      searchWaySelectedValue =
-                                                          newValue!;
-                                                    },
-                                                  );
-                                                },
-                                                items: searchWayList
-                                                    .map<
-                                                        DropdownMenuItem<
-                                                            String>>(
-                                                      (String value) =>
-                                                          DropdownMenuItem<
-                                                              String>(
-                                                        value: value,
-                                                        child: Text(
-                                                          value,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 15,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                    .toList(),
-                                                // add extra sugar..
-                                                icon: const Icon(
-                                                    Icons.arrow_drop_down),
-                                                iconSize: 35,
-                                                underline: const SizedBox(),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                // // Combobox
+                                // Container(
+                                //   padding: const EdgeInsets.all(10),
+                                //   child: Row(
+                                //     children: [
+                                //       Container(
+                                //         padding: const EdgeInsets.symmetric(
+                                //             horizontal: 10, vertical: 5),
+                                //         decoration: BoxDecoration(
+                                //           color: Theme.of(context)
+                                //               .colorScheme
+                                //               .primaryContainer,
+                                //           borderRadius:
+                                //               BorderRadius.circular(10),
+                                //         ),
+                                //         child: Row(
+                                //           children: [
+                                //             const Text(
+                                //               'طريقة البحث',
+                                //               style: TextStyle(
+                                //                 fontSize: 15,
+                                //               ),
+                                //             ),
+                                //             const SizedBox(
+                                //               width: 10,
+                                //             ),
+                                //             Container(
+                                //               padding:
+                                //                   const EdgeInsets.symmetric(
+                                //                       horizontal: 10,
+                                //                       vertical: 5),
+                                //               decoration: BoxDecoration(
+                                //                 color: Theme.of(context)
+                                //                     .scaffoldBackgroundColor,
+                                //                 borderRadius:
+                                //                     BorderRadius.circular(10),
+                                //               ),
+                                //               // dropdown below..
+                                //               child: DropdownButton<String>(
+                                //                 value: searchWaySelectedValue,
+                                //                 onChanged:
+                                //                     (String? newValue) async {
+                                //                   setState(
+                                //                     () {
+                                //                       searchWaySelectedValue =
+                                //                           newValue!;
+                                //                     },
+                                //                   );
+                                //                 },
+                                //                 items: searchWayList
+                                //                     .map<
+                                //                         DropdownMenuItem<
+                                //                             String>>(
+                                //                       (String value) =>
+                                //                           DropdownMenuItem<
+                                //                               String>(
+                                //                         value: value,
+                                //                         child: Text(
+                                //                           value,
+                                //                           style:
+                                //                               const TextStyle(
+                                //                             fontSize: 15,
+                                //                           ),
+                                //                         ),
+                                //                       ),
+                                //                     )
+                                //                     .toList(),
+                                //                 // add extra sugar..
+                                //                 icon: const Icon(
+                                //                     Icons.arrow_drop_down),
+                                //                 iconSize: 35,
+                                //                 underline: const SizedBox(),
+                                //               ),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                                 // Combobox
                                 Container(
                                   padding: const EdgeInsets.all(10),
@@ -758,6 +760,8 @@ class _SearchViewState extends State<SearchView> {
                                                           newValue!;
                                                     },
                                                   );
+                                                  print(
+                                                      "searchGradeSelectedValue: $searchGradeSelectedValue");
                                                 },
                                                 items: searchGradeList
                                                     .map<
