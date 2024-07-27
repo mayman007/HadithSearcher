@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
   bool _isLoading = false;
 
   bool _showBackToTopButton = false;
-  late ScrollController _scrollController;
+  late ScrollController scrollController;
 
   List<bool> isFavButtonPressedList = List.generate(300, (_) => false);
 
@@ -35,22 +36,33 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
     });
   }
 
+  void scrollListener() async {
+    setState(() {
+      if (scrollController.offset >= 800) {
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          setState(() {
+            _showBackToTopButton = false; // hide the back-to-top button
+          });
+        } else if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            _showBackToTopButton = true; // show the back-to-top button
+          });
+        }
+      } else {
+        _showBackToTopButton = false; // hide the back-to-top button
+      }
+    });
+  }
+
   @override
   void initState() {
     getFontFamily();
     getFontWeight();
     getFontSize();
     getPadding();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        setState(() {
-          if (_scrollController.offset >= 400) {
-            _showBackToTopButton = true; // show the back-to-top button
-          } else {
-            _showBackToTopButton = false; // hide the back-to-top button
-          }
-        });
-      });
+    scrollController = ScrollController()..addListener(scrollListener);
 
     callFetchData();
 
@@ -59,7 +71,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.removeListener(scrollListener);
     super.dispose();
   }
 
@@ -226,7 +238,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
                   Expanded(
                     child: ListView.builder(
                       primary: false,
-                      controller: _scrollController,
+                      controller: scrollController,
                       itemCount: pairedValues.length,
                       itemBuilder: (BuildContext context, int index) {
                         Map hadith = pairedValues[index];
@@ -258,7 +270,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
           ? null
           : FloatingActionButton(
               onPressed: () {
-                _scrollController.animateTo(
+                scrollController.animateTo(
                   0,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.linear,
