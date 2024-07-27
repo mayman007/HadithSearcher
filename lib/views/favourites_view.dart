@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,7 +26,27 @@ class _FavouritesViewState extends State<FavouritesView> {
   bool _isEmpty = true;
 
   bool _showBackToTopButton = false;
-  late ScrollController _scrollController;
+  late ScrollController scrollController;
+
+  void scrollListener() async {
+    setState(() {
+      if (scrollController.offset >= 800) {
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          setState(() {
+            _showBackToTopButton = false; // hide the back-to-top button
+          });
+        } else if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            _showBackToTopButton = true; // show the back-to-top button
+          });
+        }
+      } else {
+        _showBackToTopButton = false; // hide the back-to-top button
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -34,23 +55,14 @@ class _FavouritesViewState extends State<FavouritesView> {
     getFontSize();
     getPadding();
     fetchData();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        setState(() {
-          if (_scrollController.offset >= 400) {
-            _showBackToTopButton = true; // show the back-to-top button
-          } else {
-            _showBackToTopButton = false; // hide the back-to-top button
-          }
-        });
-      });
+    scrollController = ScrollController()..addListener(scrollListener);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.removeListener(scrollListener);
     super.dispose();
   }
 
@@ -204,7 +216,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                         Expanded(
                             child: ListView.builder(
                               primary: false,
-                              controller: _scrollController,
+                              controller: scrollController,
                               itemCount: pairedValues.length,
                               itemBuilder: (BuildContext context, int index) {
                                 var hadith = pairedValues[index];
@@ -236,7 +248,7 @@ class _FavouritesViewState extends State<FavouritesView> {
             ? null
             : FloatingActionButton(
                 onPressed: () {
-                  _scrollController.animateTo(
+                  scrollController.animateTo(
                     0,
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.linear,
