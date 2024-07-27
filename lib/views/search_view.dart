@@ -184,8 +184,6 @@ class _SearchViewState extends State<SearchView> {
         searchGrade = '4';
       }
 
-      print("searchGrade $searchGrade");
-
       if (searchMohdithSelectedValue == 'جميع المحدثين') {
         searchMohdith = '0';
       } else if (searchMohdithSelectedValue == 'الإمام المالك') {
@@ -214,7 +212,7 @@ class _SearchViewState extends State<SearchView> {
           searchPagaNumber = 1;
         });
       }
-      print("OG searchPagaNumber: $searchPagaNumber");
+
       var url = Uri.parse(
           '$hadithApiBaseUrl/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
@@ -247,15 +245,10 @@ class _SearchViewState extends State<SearchView> {
 
         int favCurrent = -1;
 
-        print("THE START OF THE LOOP");
-
         if (searchPagaNumber > 1) {
           favCurrent += (searchPagaNumber - 1) * 30;
         }
-        print("favCurrent: $favCurrent");
-
         for (Map hadith in jsonResponse['data']) {
-          print(favCurrent);
           favCurrent += 1;
           pairedValues.add(hadith);
 
@@ -763,8 +756,6 @@ class _SearchViewState extends State<SearchView> {
                                                           newValue!;
                                                     },
                                                   );
-                                                  print(
-                                                      "searchGradeSelectedValue: $searchGradeSelectedValue");
                                                 },
                                                 items: searchGradeList
                                                     .map<
@@ -985,8 +976,6 @@ class _SearchViewState extends State<SearchView> {
                                             searchExcludedWords =
                                                 '&xclude=$value';
                                           });
-                                          print(
-                                              "searchExcludedWords $searchExcludedWords");
                                         },
                                       ),
                                     ),
