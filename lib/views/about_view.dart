@@ -134,7 +134,7 @@ class _AboutViewState extends State<AboutView> {
                           child: IconButton(
                             onPressed: () {
                               _launchUrl(
-                                  Uri.parse('https://ko-fi.com/moaymandev'));
+                                  Uri.parse('https://ko-fi.com/mayman007'));
                             },
                             icon: const Icon(Icons.attach_money_rounded),
                             tooltip: 'دعم',
@@ -162,7 +162,7 @@ class _AboutViewState extends State<AboutView> {
                           child: IconButton(
                             onPressed: () {
                               _launchUrl(Uri.parse(
-                                  'https://github.com/moaymandev/HadithSearcher'));
+                                  'https://github.com/mayman007/HadithSearcher'));
                             },
                             icon: const Icon(Icons.code_rounded),
                             tooltip: 'الكود',
@@ -226,33 +226,33 @@ class _AboutViewState extends State<AboutView> {
                             ),
                             onTap: () {
                               _launchUrl(
-                                  Uri.parse('https://github.com/MoAymanDev'));
+                                  Uri.parse('https://github.com/mayman007'));
                             },
                           ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Text(
-                            '・',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          GestureDetector(
-                            child: const Text(
-                              'Twitter',
-                              style: TextStyle(
-                                fontSize: 20,
-                                decoration: TextDecoration.underline,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            onTap: () {
-                              _launchUrl(
-                                  Uri.parse('https://twitter.com/MoAymanDev'));
-                            },
-                          ),
+                          // const SizedBox(
+                          //   width: 4,
+                          // ),
+                          // const Text(
+                          //   '・',
+                          //   style: TextStyle(fontWeight: FontWeight.bold),
+                          // ),
+                          // const SizedBox(
+                          //   width: 4,
+                          // ),
+                          // GestureDetector(
+                          //   child: const Text(
+                          //     'Twitter',
+                          //     style: TextStyle(
+                          //       fontSize: 20,
+                          //       decoration: TextDecoration.underline,
+                          //       color: Colors.blue,
+                          //     ),
+                          //   ),
+                          //   onTap: () {
+                          //     _launchUrl(
+                          //         Uri.parse('https://twitter.com/mayman007'));
+                          //   },
+                          // ),
                         ],
                       ),
                       const SizedBox(
