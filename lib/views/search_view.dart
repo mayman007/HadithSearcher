@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/db/database.dart';
@@ -22,16 +23,20 @@ class _SearchViewState extends State<SearchView> {
 
   String hadithApiBaseUrl = dotenv.env['HADITH_API_BASE_URL']!;
 
-  bool _isLoading = false;
+  bool isLoadingForTheFirstTime = false;
+
+  bool isLoading = false;
+
+  bool dontLoad = false;
 
   bool _isEmpty = true;
 
   final textFieldController = TextEditingController();
 
   bool _showBackToTopButton = false;
-  late ScrollController _scrollController;
+  late ScrollController scrollController;
 
-  List<bool> isFavButtonPressedList = List.generate(30, (_) => false);
+  List<bool> isFavButtonPressedList = List.generate(3000, (_) => false);
 
   void checkForUpdate() async {
     // Get the latest update information.
@@ -65,26 +70,43 @@ class _SearchViewState extends State<SearchView> {
     showDialog(context: context, builder: (context) => dialog);
   }
 
+  void scrollListener() async {
+    setState(() {
+      if (scrollController.offset >= 800) {
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          setState(() {
+            _showBackToTopButton = false; // hide the back-to-top button
+          });
+        } else if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            _showBackToTopButton = true; // show the back-to-top button
+          });
+        }
+      } else {
+        _showBackToTopButton = false; // hide the back-to-top button
+      }
+    });
+    if (scrollController.position.extentAfter < 500) {
+      if (searchIsRunning == false) {
+        await fetchData();
+        await Future.delayed(const Duration(seconds: 4));
+      }
+    }
+  }
+
   @override
   void initState() {
     checkForUpdate();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        setState(() {
-          if (_scrollController.offset >= 400) {
-            _showBackToTopButton = true; // show the back-to-top button
-          } else {
-            _showBackToTopButton = false; // hide the back-to-top button
-          }
-        });
-      });
+    scrollController = ScrollController()..addListener(scrollListener);
     super.initState();
   }
 
   @override
   void dispose() {
     textFieldController.dispose();
-    _scrollController.dispose();
+    scrollController.removeListener(scrollListener);
     super.dispose();
   }
 
@@ -92,7 +114,9 @@ class _SearchViewState extends State<SearchView> {
 
   String searchKeyword = '';
 
-  int searchPagaNumber = 1;
+  int searchPagaNumber = 0;
+
+  bool searchIsRunning = false;
 
   Future<void> fetchData() async {
     if (searchKeyword == '') {
@@ -102,6 +126,18 @@ class _SearchViewState extends State<SearchView> {
         'لا يمكنك ترك خانة البحث فارغة',
       );
     }
+    // if (dontLoad == true) {
+    //   return;
+    // }
+    setState(() {
+      searchIsRunning = true;
+      if (isLoadingForTheFirstTime == false) {
+        isLoading = true;
+        dontLoad = false;
+      } else {
+        _showBackToTopButton = false;
+      }
+    });
     getFontFamily();
     getFontWeight();
     getFontSize();
@@ -168,6 +204,12 @@ class _SearchViewState extends State<SearchView> {
       } else if (searchBookSelectedValue == 'الصحيح المسند') {
         searchBook = '96';
       }
+      if (isAdvancedSearchEnabled == true) {
+        setState(() {
+          searchPagaNumber = 1;
+        });
+      }
+      print("OG searchPagaNumber: $searchPagaNumber");
       var url = Uri.parse(
           '$hadithApiBaseUrl/v1/site/hadith/search?value=$searchKeyword&page=$searchPagaNumber&st=$searchWay&t=$searchRange&d[]=$searchGrade&m[]=$searchMohdith&s[]=$searchBook$searchExcludedWords');
       var response = await http.get(url).timeout(const Duration(seconds: 24));
@@ -175,41 +217,81 @@ class _SearchViewState extends State<SearchView> {
       var jsonResponse = json.decode(decodedBody);
 
       if (jsonResponse['metadata']['length'] == 0) {
+        searchIsRunning = false;
         if (searchPagaNumber > 1) {
           setState(() {
-            searchPagaNumber -= 1;
+            dontLoad = true;
+            // searchPagaNumber -= 1;
+            isLoading = false;
           });
+          return;
+        } else {
+          setState(() {
+            searchIsRunning = false;
+          });
+          return await showErrorDialog(
+            context,
+            'لا توجد نتائج',
+            'استخدم كلمات أو إعدادات أخرى',
+          );
         }
-        return await showErrorDialog(
-          context,
-          'لا توجد نتائج',
-          'استخدم كلمات أو إعدادات أخرى',
-        );
       } else {
-        pairedValues = [];
+        if (isLoadingForTheFirstTime) {
+          pairedValues = [];
+        }
 
-        int current = -1;
+        int favCurrent = -1;
+
+        print("THE START OF THE LOOP");
+
+        if (searchPagaNumber > 1) {
+          favCurrent += (searchPagaNumber - 1) * 30;
+        }
+        print("favCurrent: $favCurrent");
+
         for (Map hadith in jsonResponse['data']) {
-          current += 1;
+          print(favCurrent);
+          favCurrent += 1;
           pairedValues.add(hadith);
+
           var favHadiths = await sqlDb.selectData("SELECT * FROM 'favourites'");
           for (var row in favHadiths) {
             if (row['hadithid'] == hadith['hadithId']) {
               setState(() {
-                isFavButtonPressedList[current] = true;
+                isFavButtonPressedList[favCurrent] = true;
               });
               break;
             }
           }
         }
       }
+      void main() {
+        // Create a set to keep track of seen hadithId values
+        Set<int> seenIds = {};
+
+        // Iterate over the list in reverse to remove duplicates from the end
+        for (int i = pairedValues.length - 1; i >= 0; i--) {
+          int id = pairedValues[i]['hadithId'];
+          if (seenIds.contains(id)) {
+            pairedValues.removeAt(i);
+          } else {
+            seenIds.add(id);
+          }
+        }
+      }
     } on http.ClientException {
+      setState(() {
+        searchIsRunning = false;
+      });
       return await showErrorDialog(
         context,
         'خطأ بالإتصال بالإنترنت',
         'تأكد من إتصالك بالإنترنت وأعد المحاولة',
       );
     } on TimeoutException {
+      setState(() {
+        searchIsRunning = false;
+      });
       return await showErrorDialog(
         context,
         'نفذ الوقت',
@@ -217,8 +299,15 @@ class _SearchViewState extends State<SearchView> {
       );
     }
     setState(() {
+      searchIsRunning = false;
+      searchPagaNumber += 1;
       _isEmpty = false;
-    }); // Refresh the UI after fetching data
+      if (isLoadingForTheFirstTime) {
+        isLoadingForTheFirstTime = false;
+      } else {
+        isLoading = false;
+      }
+    });
   }
 
   String fontFamilySelectedValue = 'Roboto';
@@ -370,7 +459,7 @@ class _SearchViewState extends State<SearchView> {
         ],
       ),
       body: Center(
-        child: _isLoading
+        child: isLoadingForTheFirstTime
             ? const CircularProgressIndicator() // Show CircularProgressIndicator when loading
             : Column(
                 children: [
@@ -395,13 +484,13 @@ class _SearchViewState extends State<SearchView> {
                               searchPagaNumber = 1;
                               isAdvancedSearchEnabled = false;
                               searchKeyword = textFieldController.text;
-                              _isLoading =
+                              isLoadingForTheFirstTime =
                                   true; // Display CircularProgressIndicator
                               _showBackToTopButton = false;
                             });
                             await fetchData();
                             setState(() {
-                              _isLoading =
+                              isLoadingForTheFirstTime =
                                   false; // Hide CircularProgressIndicator
                             });
                           },
@@ -421,13 +510,13 @@ class _SearchViewState extends State<SearchView> {
                               searchPagaNumber = 1;
                               isAdvancedSearchEnabled = false;
                               searchKeyword = textFieldController.text;
-                              _isLoading =
+                              isLoadingForTheFirstTime =
                                   true; // Display CircularProgressIndicator
                               _showBackToTopButton = false;
                             });
                             await fetchData();
                             setState(() {
-                              _isLoading =
+                              isLoadingForTheFirstTime =
                                   false; // Hide CircularProgressIndicator
                             });
                           },
@@ -926,7 +1015,7 @@ class _SearchViewState extends State<SearchView> {
                           Expanded(
                               child: ListView.builder(
                                 primary: false,
-                                controller: _scrollController,
+                                controller: scrollController,
                                 itemCount: pairedValues.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   Map hadith = pairedValues[index];
@@ -959,102 +1048,105 @@ class _SearchViewState extends State<SearchView> {
                       ? const Text('')
                       : isAdvancedSearchEnabled
                           ? const Text('')
-                          : Column(
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    SizedBox(
-                                      height: 45,
-                                      child: ElevatedButton.icon(
-                                        onPressed: () async {
-                                          setState(() {
-                                            searchPagaNumber =
-                                                searchPagaNumber + 1;
-                                            _isLoading =
-                                                true; // Display CircularProgressIndicator
-                                            _showBackToTopButton = false;
-                                          });
-                                          await fetchData();
-                                          setState(() {
-                                            _isLoading =
-                                                false; // Hide CircularProgressIndicator
-                                          });
-                                        },
-                                        icon: const Icon(Icons.arrow_back),
-                                        label: const Text('الصفحة التالية'),
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      '$searchPagaNumber',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 45,
-                                      child: ElevatedButton.icon(
-                                        onPressed: () async {
-                                          if (searchPagaNumber > 1) {
-                                            setState(() {
-                                              searchPagaNumber =
-                                                  searchPagaNumber - 1;
-                                              _isLoading =
-                                                  true; // Display CircularProgressIndicator
-                                              _showBackToTopButton = false;
-                                            });
-                                            await fetchData();
-                                            setState(() {
-                                              _isLoading =
-                                                  false; // Hide CircularProgressIndicator
-                                            });
-                                          }
-                                        },
-                                        icon: const Icon(Icons.arrow_forward),
-                                        label: const Text('الصفحة السابقة'),
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            ),
+                          : const SizedBox(),
+                  // Column(
+                  //     children: [
+                  //       const SizedBox(
+                  //         height: 10,
+                  //       ),
+                  //       Row(
+                  //         mainAxisAlignment:
+                  //             MainAxisAlignment.spaceEvenly,
+                  //         children: [
+                  //           SizedBox(
+                  //             height: 45,
+                  //             child: ElevatedButton.icon(
+                  //               onPressed: () async {
+                  //                 setState(() {
+                  //                   searchPagaNumber =
+                  //                       searchPagaNumber + 1;
+                  //                   isLoadingForTheFirstTime =
+                  //                       true; // Display CircularProgressIndicator
+                  //                   _showBackToTopButton = false;
+                  //                 });
+                  //                 await fetchData();
+                  //                 setState(() {
+                  //                   isLoadingForTheFirstTime =
+                  //                       false; // Hide CircularProgressIndicator
+                  //                 });
+                  //               },
+                  //               icon: const Icon(Icons.arrow_back),
+                  //               label: const Text('الصفحة التالية'),
+                  //               style: ElevatedButton.styleFrom(
+                  //                 shape: RoundedRectangleBorder(
+                  //                   borderRadius:
+                  //                       BorderRadius.circular(30.0),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           Text(
+                  //             '$searchPagaNumber',
+                  //             style: const TextStyle(
+                  //               fontSize: 20,
+                  //               fontWeight: FontWeight.bold,
+                  //             ),
+                  //           ),
+                  //           SizedBox(
+                  //             height: 45,
+                  //             child: ElevatedButton.icon(
+                  //               onPressed: () async {
+                  //                 if (searchPagaNumber > 1) {
+                  //                   setState(() {
+                  //                     searchPagaNumber =
+                  //                         searchPagaNumber - 1;
+                  //                     isLoadingForTheFirstTime =
+                  //                         true; // Display CircularProgressIndicator
+                  //                     _showBackToTopButton = false;
+                  //                   });
+                  //                   await fetchData();
+                  //                   setState(() {
+                  //                     isLoadingForTheFirstTime =
+                  //                         false; // Hide CircularProgressIndicator
+                  //                   });
+                  //                 }
+                  //               },
+                  //               icon: const Icon(Icons.arrow_forward),
+                  //               label: const Text('الصفحة السابقة'),
+                  //               style: ElevatedButton.styleFrom(
+                  //                 shape: RoundedRectangleBorder(
+                  //                   borderRadius:
+                  //                       BorderRadius.circular(30.0),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       const SizedBox(
+                  //         height: 10,
+                  //       ),
+                  //     ],
+                  //   ),
+                  isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : const SizedBox()
                 ],
               ),
       ),
       floatingActionButton: _showBackToTopButton == false
           ? null
-          : Container(
-              margin: const EdgeInsets.symmetric(vertical: 60),
-              child: FloatingActionButton(
-                onPressed: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.linear,
-                  );
-                },
-                child: const Icon(Icons.arrow_upward),
-              ),
+          : FloatingActionButton(
+              onPressed: () {
+                scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.linear,
+                );
+              },
+              child: const Icon(Icons.arrow_upward),
             ),
       drawer: const MyNavigationDrawer(),
     );
