@@ -62,7 +62,7 @@ class _AboutViewState extends State<AboutView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: const Text(
-                    'تطبيق Hadith Searcher يهدف إلي تسهيل البحث عن الأحاديث والتحقق منها.',
+                    'تطبيق Hadith Searcher يهدف إلى تسهيل البحث عن الأحاديث والتحقق منها.',
                     style: TextStyle(
                       fontSize: 18,
                     ),

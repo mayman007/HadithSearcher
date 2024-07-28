@@ -245,7 +245,7 @@ class _HadithContainerState extends State<HadithContainer> {
                       await sqlDb.insertData(
                           "INSERT INTO 'favourites' ('hadithtext', 'hadithinfo', 'hadithid') VALUES ('${widget.hadithText}', '${widget.hadithInfo}', '${widget.hadithId}')");
                       Fluttertoast.showToast(
-                        msg: 'تم إضافة الحديث إلي المفضلة',
+                        msg: 'تم إضافة الحديث إلى المفضلة',
                         toastLength: Toast.LENGTH_SHORT,
                       );
                       _onFavButtonPressed(widget.index);
@@ -259,7 +259,7 @@ class _HadithContainerState extends State<HadithContainer> {
                     label: Text(
                       isFavButtonPressedListIndex
                           ? 'أزل من المفضلة'
-                          : 'أضف إلي المفضلة',
+                          : 'أضف إلى المفضلة',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
