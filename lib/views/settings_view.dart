@@ -451,7 +451,7 @@ class _SettingsViewState extends State<SettingsView> {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     await sqlDb.updateData(
-                        "UPDATE 'settings' SET 'theme' = 'system', 'fontfamily' = 'Roboto', 'fontweight' = 'normal', 'fontsize' = 20, 'padding' = 10 WHERE id = 1");
+                        "UPDATE 'settings' SET 'theme' = 'system', 'fontfamily' = 'Roboto', 'fontweight' = 'bold', 'fontsize' = 20, 'padding' = 10 WHERE id = 1");
                     fetchData();
                   },
                   icon: const Icon(
