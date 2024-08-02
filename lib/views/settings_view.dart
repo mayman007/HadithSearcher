@@ -459,7 +459,7 @@ class _SettingsViewState extends State<SettingsView> {
                     size: 25,
                   ),
                   label: const Text(
-                    'العودة للإعدادات الإفتراضية',
+                    'العودة للإعدادات الافتراضية',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(

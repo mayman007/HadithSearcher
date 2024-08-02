@@ -79,7 +79,7 @@ class _AboutViewState extends State<AboutView> {
                   child: Column(
                     children: [
                       const Text(
-                        'جميع الأحاديث والمعلومات مأخوذة من موقع dorar.net بإستخدام API AhmedElTabarani.',
+                        'جميع الأحاديث والمعلومات مأخوذة من موقع dorar.net باستخدام API AhmedElTabarani.',
                         style: TextStyle(
                           fontSize: 18,
                         ),
