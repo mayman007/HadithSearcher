@@ -10,7 +10,6 @@ import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_update/in_app_update.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
