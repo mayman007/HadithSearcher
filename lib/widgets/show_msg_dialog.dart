@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Future<void> showMsgDialog(
   BuildContext context,
@@ -26,17 +27,23 @@ Future<void> showMsgDialog(
                 ]),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('إغلاق'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('نسخ'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: theDiscrebtion));
+                  },
+                  child: const Text('نسخ'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('إغلاق'),
+                ),
+              ],
             ),
           ],
         );
