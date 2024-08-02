@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/routes.dart';
 import '../widgets/show_navigation_drawer.dart';
@@ -88,6 +89,7 @@ class _AboutViewState extends State<AboutView> {
                           'dorar.net',
                           style: TextStyle(
                             decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
                             color: Colors.blue,
                             fontSize: 18,
                           ),
@@ -104,6 +106,7 @@ class _AboutViewState extends State<AboutView> {
                           'AhmedElTabarani API',
                           style: TextStyle(
                             decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
                             color: Colors.blue,
                             fontSize: 18,
                           ),
@@ -132,19 +135,19 @@ class _AboutViewState extends State<AboutView> {
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: IconButton(
-                            onPressed: () {
-                              _launchUrl(
-                                  Uri.parse('https://ko-fi.com/mayman007'));
+                            onPressed: () async {
+                              await Share.shareWithResult(
+                                  "https://play.google.com/store/apps/details?id=com.moaymandev.hadithsearcher");
                             },
-                            icon: const Icon(Icons.attach_money_rounded),
-                            tooltip: 'دعم',
+                            icon: const Icon(Icons.share_rounded),
+                            tooltip: 'مشاركة',
                             iconSize: 33,
                           ),
                         ),
                         const SizedBox(
                           height: 5,
                         ),
-                        const Text('دعم'),
+                        const Text('مشاركة'),
                       ],
                     ),
                     const SizedBox(
@@ -174,7 +177,35 @@ class _AboutViewState extends State<AboutView> {
                         ),
                         const Text('الكود'),
                       ],
-                    )
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _launchUrl(
+                                  Uri.parse('https://ko-fi.com/mayman007'));
+                            },
+                            icon: const Icon(Icons.attach_money_rounded),
+                            tooltip: 'دعم',
+                            iconSize: 33,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text('دعم'),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -221,6 +252,7 @@ class _AboutViewState extends State<AboutView> {
                               style: TextStyle(
                                 fontSize: 20,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Colors.blue,
                                 color: Colors.blue,
                               ),
                             ),
@@ -229,30 +261,6 @@ class _AboutViewState extends State<AboutView> {
                                   Uri.parse('https://github.com/mayman007'));
                             },
                           ),
-                          // const SizedBox(
-                          //   width: 4,
-                          // ),
-                          // const Text(
-                          //   '・',
-                          //   style: TextStyle(fontWeight: FontWeight.bold),
-                          // ),
-                          // const SizedBox(
-                          //   width: 4,
-                          // ),
-                          // GestureDetector(
-                          //   child: const Text(
-                          //     'Twitter',
-                          //     style: TextStyle(
-                          //       fontSize: 20,
-                          //       decoration: TextDecoration.underline,
-                          //       color: Colors.blue,
-                          //     ),
-                          //   ),
-                          //   onTap: () {
-                          //     _launchUrl(
-                          //         Uri.parse('https://twitter.com/mayman007'));
-                          //   },
-                          // ),
                         ],
                       ),
                       const SizedBox(
@@ -267,6 +275,7 @@ class _AboutViewState extends State<AboutView> {
                               style: TextStyle(
                                 fontSize: 18,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Colors.blue,
                                 color: Colors.blue,
                               ),
                             ),
@@ -288,6 +297,7 @@ class _AboutViewState extends State<AboutView> {
                     style: TextStyle(
                       fontSize: 18,
                       decoration: TextDecoration.underline,
+                      decorationColor: Colors.blue,
                       color: Colors.blue,
                     ),
                   ),
