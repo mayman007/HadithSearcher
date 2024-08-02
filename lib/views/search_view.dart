@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -7,7 +10,9 @@ import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_update/in_app_update.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:convert';
 import '../widgets/show_msg_dialog.dart';
@@ -108,8 +113,105 @@ class _SearchViewState extends State<SearchView> {
     }
   }
 
+  String searchWaySelectedValue = 'أي كلمة';
+  var searchWayList = [
+    'أي كلمة',
+    'جميع الكلمات',
+    'بحث مطابق',
+  ];
+
+  String searchRangeSelectedValue = 'جميع الأحاديث';
+  var searchRangeList = [
+    'جميع الأحاديث',
+    'الأحاديث المرفوعة',
+    'الأحاديث القدسية',
+    'آثار الصحابة',
+    'شروح الأحاديث',
+  ];
+
+  String searchGradeSelectedValue = 'جميع الدرجات';
+  var searchGradeList = [
+    'جميع الدرجات',
+    'أحاديث صحيحة',
+    'أحاديث أسانيدها صحيحة',
+    'أحاديث ضعيفة',
+    'أحاديث أسانيدها ضعيفة',
+  ];
+
+  String searchMohdithSelectedValue = 'جميع المحدثين';
+  var searchMohdithList = [
+    'جميع المحدثين',
+    'الإمام المالك',
+    'الإمام الشافعي',
+    'البخاري',
+    'مسلم',
+  ];
+
+  String searchBookSelectedValue = 'جميع الكتب';
+  var searchBookList = [
+    'جميع الكتب',
+    'الأربعون النووية',
+    'صحيح البخاري',
+    'صحيح مسلم',
+    'الصحيح المسند',
+  ];
+
+  String searchExcludedWords = '';
+
+  bool advancedSaveCheckbox = true;
+
+  getAdvancedPrefs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? searchWayPref = prefs.getString('searchWay');
+    String? searchRangePref = prefs.getString('searchRange');
+    String? searchGradePref = prefs.getString('searchGrade');
+    String? searchMohdithPref = prefs.getString('searchMohdith');
+    String? searchBookPref = prefs.getString('searchBook');
+    String? searchExcludedWordsPref = prefs.getString('searchExcludedWords');
+    bool? advancedSaveCheckboxPref = prefs.getBool('advancedSaveCheckbox');
+
+    setState(() {
+      if (searchWayPref != null) {
+        searchWaySelectedValue = searchWayPref;
+      }
+      if (searchRangePref != null) {
+        searchRangeSelectedValue = searchRangePref;
+      }
+      if (searchGradePref != null) {
+        searchGradeSelectedValue = searchGradePref;
+      }
+      if (searchMohdithPref != null) {
+        searchMohdithSelectedValue = searchMohdithPref;
+      }
+      if (searchBookPref != null) {
+        searchBookSelectedValue = searchBookPref;
+      }
+      if (searchExcludedWordsPref != null) {
+        searchExcludedWords = searchExcludedWordsPref;
+      }
+      if (advancedSaveCheckboxPref != null) {
+        advancedSaveCheckbox = advancedSaveCheckboxPref;
+      }
+    });
+  }
+
+  Future shareHadith(int index, Map hadith) async {
+    String hadithText =
+        '${hadith['hadith']}\n\nالراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
+
+    final result = await Share.shareWithResult(hadithText);
+
+    if (result.status == ShareResultStatus.success) {
+      Fluttertoast.showToast(
+        msg: 'تم المشاركة',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
   @override
   void initState() {
+    getAdvancedPrefs();
     checkForUpdate();
     scrollController = ScrollController()..addListener(scrollListener);
     super.initState();
@@ -385,68 +487,36 @@ class _SearchViewState extends State<SearchView> {
     });
   }
 
-  Future shareHadith(int index, Map hadith) async {
-    String hadithText =
-        '${hadith['hadith']}\n\nالراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
-
-    final result = await Share.shareWithResult(hadithText);
-
-    if (result.status == ShareResultStatus.success) {
-      Fluttertoast.showToast(
-        msg: 'تم المشاركة',
-        toastLength: Toast.LENGTH_SHORT,
-      );
+  saveAdvanvedSettings() async {
+    if (!listEquals(advancedData, [
+      searchWaySelectedValue,
+      searchRangeSelectedValue,
+      searchGradeSelectedValue,
+      searchMohdithSelectedValue,
+      searchBookSelectedValue,
+      searchExcludedWords
+    ])) {
+      if (advancedSaveCheckbox == true) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('searchWay', searchWaySelectedValue);
+        await prefs.setString('searchRange', searchRangeSelectedValue);
+        await prefs.setString('searchGrade', searchGradeSelectedValue);
+        await prefs.setString('searchMohdith', searchMohdithSelectedValue);
+        await prefs.setString('searchBook', searchBookSelectedValue);
+        await prefs.setString('searchExcludedWords', searchExcludedWords);
+        Fluttertoast.showToast(
+          msg: 'تم الحفظ',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
     }
   }
 
   var isFavButtonPressed = false;
 
-  String searchWaySelectedValue = 'أي كلمة';
-  var searchWayList = [
-    'أي كلمة',
-    'جميع الكلمات',
-    'بحث مطابق',
-  ];
-
-  String searchRangeSelectedValue = 'جميع الأحاديث';
-  var searchRangeList = [
-    'جميع الأحاديث',
-    'الأحاديث المرفوعة',
-    'الأحاديث القدسية',
-    'آثار الصحابة',
-    'شروح الأحاديث',
-  ];
-
-  String searchGradeSelectedValue = 'جميع الدرجات';
-  var searchGradeList = [
-    'جميع الدرجات',
-    'أحاديث صحيحة',
-    'أحاديث أسانيدها صحيحة',
-    'أحاديث ضعيفة',
-    'أحاديث أسانيدها ضعيفة',
-  ];
-
-  String searchMohdithSelectedValue = 'جميع المحدثين';
-  var searchMohdithList = [
-    'جميع المحدثين',
-    'الإمام المالك',
-    'الإمام الشافعي',
-    'البخاري',
-    'مسلم',
-  ];
-
-  String searchBookSelectedValue = 'جميع الكتب';
-  var searchBookList = [
-    'جميع الكتب',
-    'الأربعون النووية',
-    'صحيح البخاري',
-    'صحيح مسلم',
-    'الصحيح المسند',
-  ];
-
-  String searchExcludedWords = '';
-
   bool isAdvancedSearchEnabled = false;
+
+  List advancedData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -466,7 +536,46 @@ class _SearchViewState extends State<SearchView> {
         actions: [
           // Advanced search button
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              if (isAdvancedSearchEnabled == false) {
+                setState(() {
+                  advancedData = [
+                    searchWaySelectedValue,
+                    searchRangeSelectedValue,
+                    searchGradeSelectedValue,
+                    searchMohdithSelectedValue,
+                    searchBookSelectedValue,
+                    searchExcludedWords
+                  ];
+                });
+              } else {
+                if (!listEquals(advancedData, [
+                  searchWaySelectedValue,
+                  searchRangeSelectedValue,
+                  searchGradeSelectedValue,
+                  searchMohdithSelectedValue,
+                  searchBookSelectedValue,
+                  searchExcludedWords
+                ])) {
+                  // Search and save adv data bc advanced has been edited
+                  await saveAdvanvedSettings();
+                  setState(() {
+                    searchPagaNumber = 1;
+                    // isAdvancedSearchEnabled = false;
+                    searchKeyword = textFieldController.text;
+                    isLoadingForTheFirstTime =
+                        true; // Display CircularProgressIndicator
+                    _showBackToTopButton = false;
+                  });
+                  await fetchData();
+                  setState(() {
+                    isLoadingForTheFirstTime =
+                        false; // Hide CircularProgressIndicator
+                  });
+                } else {
+                  log("advanced settings has NOT been edited");
+                }
+              }
               setState(() {
                 _showBackToTopButton = false;
                 isAdvancedSearchEnabled = !isAdvancedSearchEnabled;
@@ -502,6 +611,7 @@ class _SearchViewState extends State<SearchView> {
                             fontSize: 16,
                           ),
                           onSubmitted: (value) async {
+                            await saveAdvanvedSettings();
                             setState(() {
                               searchPagaNumber = 1;
                               isAdvancedSearchEnabled = false;
@@ -528,6 +638,7 @@ class _SearchViewState extends State<SearchView> {
                           ),
                           label: const Text('بحث'),
                           onPressed: () async {
+                            await saveAdvanvedSettings();
                             setState(() {
                               searchPagaNumber = 1;
                               isAdvancedSearchEnabled = false;
@@ -1004,6 +1115,26 @@ class _SearchViewState extends State<SearchView> {
                                       ),
                                     ),
                                   ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                CheckboxListTile(
+                                  title: const Text(
+                                      "حفظ التعديلات للاستخدامات القادمة"),
+                                  value: advancedSaveCheckbox,
+                                  checkColor: Colors.white,
+                                  onChanged: (newValue) async {
+                                    setState(() {
+                                      advancedSaveCheckbox = newValue!;
+                                    });
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    await prefs.setBool('advancedSaveCheckbox',
+                                        advancedSaveCheckbox);
+                                  },
+                                  controlAffinity: ListTileControlAffinity
+                                      .leading, //  <-- leading Checkbox
                                 ),
                               ],
                             ).animate().fade(duration: 200.ms),
