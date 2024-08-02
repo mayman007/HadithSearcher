@@ -36,23 +36,31 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
     });
   }
 
+  double previousOffset = 0;
+  double upwardScrollDistance = 0;
+
   void scrollListener() async {
     setState(() {
       if (scrollController.offset >= 800) {
         if (scrollController.position.userScrollDirection ==
             ScrollDirection.reverse) {
-          setState(() {
-            _showBackToTopButton = false; // hide the back-to-top button
-          });
+          _showBackToTopButton = false; // Hide the back-to-top button
+          upwardScrollDistance = 0;
         } else if (scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
-          setState(() {
-            _showBackToTopButton = true; // show the back-to-top button
-          });
+          double scrollDelta = previousOffset - scrollController.offset;
+          upwardScrollDistance += scrollDelta;
+
+          if (upwardScrollDistance >= 100) {
+            _showBackToTopButton = true; // Show the back-to-top button
+          }
         }
       } else {
-        _showBackToTopButton = false; // hide the back-to-top button
+        _showBackToTopButton = false; // Hide the back-to-top button
+        upwardScrollDistance = 0;
       }
+
+      previousOffset = scrollController.offset;
     });
   }
 

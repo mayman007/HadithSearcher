@@ -19,7 +19,10 @@ Future<void> showErrorDialog(
                   const SizedBox(
                     height: 20,
                   ),
-                  SelectableText(theDiscrebtion),
+                  SelectableText(
+                    theDiscrebtion,
+                    style: const TextStyle(fontSize: 20),
+                  ),
                 ]),
           ),
           actions: [
