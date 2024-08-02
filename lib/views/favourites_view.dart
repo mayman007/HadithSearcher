@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -80,8 +81,7 @@ class _FavouritesViewState extends State<FavouritesView> {
   }
 
   Future shareHadith(int index, Map hadith) async {
-    String hadithText =
-        '${hadith['hadith']}\n\nالراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
+    String hadithText = '${hadith['hadithtext']}\n\n${hadith['hadithinfo']}';
 
     final result = await Share.shareWithResult(hadithText);
 
@@ -240,7 +240,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                               controller: scrollController,
                               itemCount: pairedValues.length,
                               itemBuilder: (BuildContext context, int index) {
-                                var hadith = pairedValues[index];
+                                Map hadith = pairedValues[index];
                                 String hadithText = hadith['hadithtext'];
                                 String hadithInfo = hadith['hadithinfo'];
                                 String hadithId = hadith['hadithid'];
@@ -389,6 +389,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                             height: 45,
                                             child: ElevatedButton.icon(
                                               onPressed: () async {
+                                                log(hadith.toString());
                                                 await shareHadith(
                                                     index, hadith);
                                               },
