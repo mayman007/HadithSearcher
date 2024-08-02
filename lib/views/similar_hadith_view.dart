@@ -98,7 +98,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
   Future<void> fetchData(String hadithId) async {
     const CircularProgressIndicator();
     if (hadithId == '') {
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'أكتب شئ',
         'لا يمكنك ترك خانة البحث فارغة',
@@ -111,7 +111,7 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
       var jsonResponse = json.decode(decodedBody);
 
       if (jsonResponse['metadata']['length'] == 0) {
-        return await showErrorDialog(
+        return await showMsgDialog(
           context,
           'لا توجد نتائج',
           'لا توجد أحاديث مشابهة لهذا الحديث',
@@ -135,13 +135,13 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
         }
       }
     } on http.ClientException {
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'خطأ بالإتصال بالإنترنت',
         'تأكد من إتصالك بالإنترنت وأعد المحاولة',
       );
     } on TimeoutException {
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'نفذ الوقت',
         'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',

@@ -133,7 +133,7 @@ class _SearchViewState extends State<SearchView> {
 
   Future<void> fetchData() async {
     if (searchKeyword == '') {
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'أكتب شئ',
         'لا يمكنك ترك خانة البحث فارغة',
@@ -242,7 +242,7 @@ class _SearchViewState extends State<SearchView> {
           setState(() {
             searchIsRunning = false;
           });
-          return await showErrorDialog(
+          return await showMsgDialog(
             context,
             'لا توجد نتائج',
             'استخدم كلمات أو إعدادات أخرى',
@@ -291,7 +291,7 @@ class _SearchViewState extends State<SearchView> {
       setState(() {
         searchIsRunning = false;
       });
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'خطأ بالإتصال بالإنترنت',
         'تأكد من إتصالك بالإنترنت وأعد المحاولة',
@@ -300,7 +300,7 @@ class _SearchViewState extends State<SearchView> {
       setState(() {
         searchIsRunning = false;
       });
-      return await showErrorDialog(
+      return await showMsgDialog(
         context,
         'نفذ الوقت',
         'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',
@@ -1099,7 +1099,7 @@ class _SearchViewState extends State<SearchView> {
                                                       var jsonResponse = json
                                                           .decode(decodedBody);
 
-                                                      return await showErrorDialog(
+                                                      return await showMsgDialog(
                                                         context,
                                                         'الشرح',
                                                         jsonResponse['data'][
@@ -1114,13 +1114,13 @@ class _SearchViewState extends State<SearchView> {
                                                       );
                                                     }
                                                   } on http.ClientException {
-                                                    return await showErrorDialog(
+                                                    return await showMsgDialog(
                                                       context,
                                                       'خطأ بالإتصال بالإنترنت',
                                                       'تأكد من إتصالك بالإنترنت وأعد المحاولة',
                                                     );
                                                   } on TimeoutException {
-                                                    return await showErrorDialog(
+                                                    return await showMsgDialog(
                                                       context,
                                                       'نفذ الوقت',
                                                       'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',

@@ -143,7 +143,7 @@ class _SettingsViewState extends State<SettingsView> {
                                 await sqlDb.updateData(
                                     "UPDATE 'settings' SET 'theme' = '$selectedTheme' WHERE id = 1");
                                 fetchData();
-                                await showErrorDialog(
+                                await showMsgDialog(
                                   context,
                                   'أعد فتح التطبيق',
                                   'أعد فتح التطبيق حتى حتى يتم تغيير المظهر العام',

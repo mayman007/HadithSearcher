@@ -294,7 +294,7 @@ class _FavouritesViewState extends State<FavouritesView> {
                                                     var jsonResponse = json
                                                         .decode(decodedBody);
 
-                                                    return await showErrorDialog(
+                                                    return await showMsgDialog(
                                                       context,
                                                       'الشرح',
                                                       jsonResponse['data']
@@ -309,13 +309,13 @@ class _FavouritesViewState extends State<FavouritesView> {
                                                     );
                                                   }
                                                 } on http.ClientException {
-                                                  return await showErrorDialog(
+                                                  return await showMsgDialog(
                                                     context,
                                                     'خطأ بالإتصال بالإنترنت',
                                                     'تأكد من إتصالك بالإنترنت وأعد المحاولة',
                                                   );
                                                 } on TimeoutException {
-                                                  return await showErrorDialog(
+                                                  return await showMsgDialog(
                                                     context,
                                                     'نفذ الوقت',
                                                     'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',

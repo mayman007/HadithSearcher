@@ -123,7 +123,7 @@ class _HadithContainerState extends State<HadithContainer>
                         var decodedBody = utf8.decode(response.bodyBytes);
                         var jsonResponse = json.decode(decodedBody);
 
-                        return await showErrorDialog(
+                        return await showMsgDialog(
                           context,
                           'الشرح',
                           jsonResponse['data']['sharhMetadata']['sharh'],
@@ -135,13 +135,13 @@ class _HadithContainerState extends State<HadithContainer>
                         );
                       }
                     } on http.ClientException {
-                      return await showErrorDialog(
+                      return await showMsgDialog(
                         context,
                         'خطأ بالإتصال بالإنترنت',
                         'تأكد من إتصالك بالإنترنت وأعد المحاولة',
                       );
                     } on TimeoutException {
-                      return await showErrorDialog(
+                      return await showMsgDialog(
                         context,
                         'نفذ الوقت',
                         'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة',
