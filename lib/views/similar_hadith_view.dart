@@ -7,8 +7,7 @@ import 'dart:async';
 import 'dart:convert';
 import '../db/database.dart';
 import '../widgets/hadith_container.dart';
-import '../widgets/show_error_dialog.dart';
-import 'package:flutter/services.dart';
+import '../widgets/show_msg_dialog.dart';
 
 class SimilarHadithView extends StatefulWidget {
   const SimilarHadithView({super.key, this.hadithId});
@@ -92,13 +91,6 @@ class _SimilarHadithViewState extends State<SimilarHadithView> {
     setState(() {
       _isLoading = false; // Hide CircularProgressIndicator
     });
-  }
-
-  Future copyHadith(int index) async {
-    var hadith = pairedValues[index];
-    var hadithText =
-        '${hadith['hadith']}\n\nالراوي: ${hadith['rawi']}\nالمحدث: ${hadith['mohdith']}\nالمصدر: ${hadith['book']}\nالصفحة أو الرقم: ${hadith['numberOrPage']}\nخلاصة حكم المحدث: ${hadith['grade']}';
-    await Clipboard.setData(ClipboardData(text: hadithText));
   }
 
   List<Map> pairedValues = [];

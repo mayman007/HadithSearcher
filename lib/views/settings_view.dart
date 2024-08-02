@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hadithsearcher/widgets/show_error_dialog.dart';
+import 'package:hadithsearcher/widgets/show_msg_dialog.dart';
 import '../constants/routes.dart';
 import '../db/database.dart';
 import '../widgets/show_navigation_drawer.dart';

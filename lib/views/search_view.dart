@@ -10,7 +10,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:async';
 import 'dart:convert';
-import '../widgets/show_error_dialog.dart';
+import '../widgets/show_msg_dialog.dart';
 import '../widgets/show_navigation_drawer.dart';
 
 class SearchView extends StatefulWidget {

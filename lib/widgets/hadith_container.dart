@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hadithsearcher/widgets/show_error_dialog.dart';
+import 'package:hadithsearcher/widgets/show_msg_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hadithsearcher/db/database.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';

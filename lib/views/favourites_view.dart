@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hadithsearcher/views/similar_hadith_view.dart';
-import 'package:hadithsearcher/widgets/show_error_dialog.dart';
+import 'package:hadithsearcher/widgets/show_msg_dialog.dart';
 import 'package:hadithsearcher/widgets/show_navigation_drawer.dart';
 import 'package:share_plus/share_plus.dart';
 import '../constants/routes.dart';
@@ -92,12 +91,6 @@ class _FavouritesViewState extends State<FavouritesView> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
-  }
-
-  Future copyHadith(int index) async {
-    var hadith = pairedValues[index];
-    var hadithText = '${hadith['hadithtext']}${hadith['hadithinfo']}';
-    await Clipboard.setData(ClipboardData(text: hadithText));
   }
 
   List<Map> pairedValues = [];
