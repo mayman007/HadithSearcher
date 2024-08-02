@@ -49,6 +49,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   fluttertoast: ^8.2.2
   share_plus: ^7.2.1
+  shared_preferences: ^2.2.3
 
 flutter_native_splash:
  color: "#ffffff"
