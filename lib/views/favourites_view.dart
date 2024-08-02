@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -279,11 +277,22 @@ class _FavouritesViewState extends State<FavouritesView> {
                                             child: ElevatedButton.icon(
                                               onPressed: () async {
                                                 try {
-                                                  if (hadith[
+                                                  var url = Uri.parse(
+                                                      "$hadithApiBaseUrl/v1/site/hadith/$hadithId");
+                                                  var response = await http
+                                                      .get(url)
+                                                      .timeout(const Duration(
+                                                          seconds: 8));
+                                                  var decodedBody = utf8.decode(
+                                                      response.bodyBytes);
+                                                  var sourceHadith =
+                                                      json.decode(decodedBody);
+
+                                                  if (sourceHadith['data'][
                                                           'hasSharhMetadata'] ==
                                                       true) {
                                                     var url = Uri.parse(
-                                                        "$hadithApiBaseUrl/v1/site/sharh/${hadith['sharhMetadata']['id']}");
+                                                        "$hadithApiBaseUrl/v1/site/sharh/${sourceHadith['data']['sharhMetadata']['id']}");
                                                     var response = await http
                                                         .get(url)
                                                         .timeout(const Duration(
@@ -389,7 +398,6 @@ class _FavouritesViewState extends State<FavouritesView> {
                                             height: 45,
                                             child: ElevatedButton.icon(
                                               onPressed: () async {
-                                                log(hadith.toString());
                                                 await shareHadith(
                                                     index, hadith);
                                               },
