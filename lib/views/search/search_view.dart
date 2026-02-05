@@ -1,0 +1,375 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:provider/provider.dart';
+import '../../models/search_params.dart';
+import '../../services/update_service.dart';
+import '../../viewmodels/search_viewmodel.dart';
+import '../../widgets/app_drawer.dart';
+import '../../widgets/back_to_top_button.dart';
+import '../../widgets/hadith_card.dart';
+import '../../widgets/message_dialog.dart';
+
+class SearchView extends StatefulWidget {
+  const SearchView({super.key});
+
+  @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
+  final _textController = TextEditingController();
+  final _excludedWordsController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    initScrollController();
+    _checkForUpdate();
+
+    // Initialize ViewModel
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SearchViewModel>().init();
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _excludedWordsController.dispose();
+    disposeScrollController();
+    super.dispose();
+  }
+
+  Future<void> _checkForUpdate() async {
+    final updateInfo = await UpdateService().checkForUpdate();
+    if (updateInfo != null && mounted) {
+      _showUpdateDialog(updateInfo);
+    }
+  }
+
+  void _showUpdateDialog(AppUpdateInfo updateInfo) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('تحديث جديد'),
+        content: const Text('يوجد تحديث جديد في المتجر, الرجاء التحديث.'),
+        actions: [
+          TextButton(
+            onPressed: () => InAppUpdate.performImmediateUpdate(),
+            child: const Text('تحديث'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onSearch() async {
+    final vm = context.read<SearchViewModel>();
+    hideBackToTopButton();
+    vm.closeAdvancedSearch();
+    await vm.saveAdvancedPrefs();
+    await vm.search(_textController.text);
+
+    if (vm.errorMessage == 'emptySearch' && mounted) {
+      showMessageDialog(
+        context,
+        title: 'أكتب شئ',
+        content: 'لا يمكنك ترك خانة البحث فارغة',
+      );
+      vm.clearError();
+    } else if (vm.errorMessage == 'noResults' && mounted) {
+      showMessageDialog(
+        context,
+        title: 'لا توجد نتائج',
+        content: 'استخدم كلمات أو إعدادات أخرى',
+      );
+      vm.clearError();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<SearchViewModel>();
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Add scroll listener for infinite loading
+    scrollController.addListener(() {
+      if (scrollController.position.extentAfter < 500 && !vm.isLoadingMore) {
+        vm.loadMore();
+      }
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'البحث',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final vm = context.read<SearchViewModel>();
+              if (vm.isAdvancedSearchOpen) {
+                // Just close the panel and save prefs, don't re-search
+                vm.saveAdvancedPrefs();
+              }
+              vm.toggleAdvancedSearch();
+            },
+            icon: const Icon(Icons.filter_alt, size: 30),
+            tooltip: 'البحث المتقدم',
+          ),
+        ],
+      ),
+      body: Center(
+        child: vm.isLoading
+            ? const CircularProgressIndicator()
+            : Column(
+                children: [
+                  _buildSearchBar(screenWidth),
+                  const SizedBox(height: 10),
+                  if (vm.isAdvancedSearchOpen)
+                    _buildAdvancedSearch(vm)
+                  else
+                    _buildResults(vm),
+                ],
+              ),
+      ),
+      floatingActionButton: buildBackToTopButton(),
+      drawer: const AppDrawer(),
+    );
+  }
+
+  Widget _buildSearchBar(double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox(
+          width: screenWidth * 0.6,
+          height: 60,
+          child: TextField(
+            textInputAction: TextInputAction.search,
+            controller: _textController,
+            decoration: const InputDecoration(hintText: 'تحقق من حديث...'),
+            style: const TextStyle(fontSize: 16),
+            onSubmitted: (_) => _onSearch(),
+          ),
+        ),
+        SizedBox(
+          height: 60,
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.search, size: 30),
+            label: const Text('بحث'),
+            onPressed: _onSearch,
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdvancedSearch(SearchViewModel vm) {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+            const Text(
+              'البحث المتقدم',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 15),
+            _buildDropdownRow(
+              'طريقة البحث',
+              vm.searchWay.arabicName,
+              SearchWay.values.map((e) => e.arabicName).toList(),
+              (value) => vm.setSearchWay(SearchWay.fromArabic(value!)),
+            ),
+            _buildDropdownRow(
+              'نطاق البحث',
+              vm.searchRange.arabicName,
+              SearchRange.values.map((e) => e.arabicName).toList(),
+              (value) => vm.setSearchRange(SearchRange.fromArabic(value!)),
+            ),
+            _buildDropdownRow(
+              'درجة الحديث',
+              vm.searchGrade.arabicName,
+              SearchGrade.values.map((e) => e.arabicName).toList(),
+              (value) => vm.setSearchGrade(SearchGrade.fromArabic(value!)),
+            ),
+            _buildDropdownRow(
+              'المحدث',
+              vm.searchMohdith.arabicName,
+              SearchMohdith.values.map((e) => e.arabicName).toList(),
+              (value) => vm.setSearchMohdith(SearchMohdith.fromArabic(value!)),
+            ),
+            _buildDropdownRow(
+              'الكتاب',
+              vm.searchBook.arabicName,
+              SearchBook.values.map((e) => e.arabicName).toList(),
+              (value) => vm.setSearchBook(SearchBook.fromArabic(value!)),
+            ),
+            _buildExcludedWordsField(vm),
+            _buildSaveCheckbox(vm),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    ).animate().fade(duration: 200.ms);
+  }
+
+  Widget _buildDropdownRow(
+    String label,
+    String value,
+    List<String> items,
+    void Function(String?) onChanged,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Text(label, style: const TextStyle(fontSize: 15)),
+                const SizedBox(width: 10),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: DropdownButton<String>(
+                    value: value,
+                    onChanged: onChanged,
+                    items: items
+                        .map((item) => DropdownMenuItem(
+                              value: item,
+                              child: Text(item,
+                                  style: const TextStyle(fontSize: 15)),
+                            ))
+                        .toList(),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    iconSize: 30,
+                    underline: const SizedBox(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExcludedWordsField(SearchViewModel vm) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                const Text('كلمات مستثناة', style: TextStyle(fontSize: 15)),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 150,
+                  child: TextField(
+                    controller: _excludedWordsController,
+                    decoration: const InputDecoration(
+                      hintText: 'كلمات للاستثناء',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    style: const TextStyle(fontSize: 14),
+                    onChanged: (value) => vm.setExcludedWords(value),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaveCheckbox(SearchViewModel vm) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Checkbox(
+            value: vm.saveAdvancedSettings,
+            onChanged: (value) => vm.setSaveAdvancedSettings(value ?? true),
+          ),
+          const Text('حفظ إعدادات البحث المتقدم'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResults(SearchViewModel vm) {
+    if (vm.isEmpty) {
+      return const Expanded(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.search, size: 100, color: Colors.grey),
+              SizedBox(height: 20),
+              Text(
+                'ابحث عن حديث',
+                style: TextStyle(fontSize: 20, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Expanded(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: vm.results.length + (vm.isLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == vm.results.length) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
+                final hadith = vm.results[index];
+                return HadithCard(
+                  hadith: hadith,
+                  isFavourite: vm.isFavourite(hadith.id),
+                  onFavouriteToggle: () => vm.toggleFavourite(hadith),
+                );
+              },
+            ).animate().fade(duration: 200.ms),
+          ),
+        ],
+      ),
+    );
+  }
+}

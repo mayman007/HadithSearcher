@@ -1,0 +1,239 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../core/constants/routes.dart';
+import '../../services/database_service.dart';
+import '../../viewmodels/favourites_viewmodel.dart';
+import '../../viewmodels/settings_viewmodel.dart';
+import '../../widgets/app_drawer.dart';
+import '../../widgets/back_to_top_button.dart';
+import '../../widgets/message_dialog.dart';
+import '../similar_hadith/similar_hadith_view.dart';
+
+class FavouritesView extends StatefulWidget {
+  const FavouritesView({super.key});
+
+  @override
+  State<FavouritesView> createState() => _FavouritesViewState();
+}
+
+class _FavouritesViewState extends State<FavouritesView> with ScrollToTopMixin {
+  @override
+  void initState() {
+    super.initState();
+    initScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FavouritesViewModel>().loadFavourites();
+    });
+  }
+
+  @override
+  void dispose() {
+    disposeScrollController();
+    super.dispose();
+  }
+
+  Future<bool> _onBackPressed() async {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(searchRoute, (route) => false);
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<FavouritesViewModel>();
+    final settings = context.watch<SettingsViewModel>();
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _onBackPressed();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('المفضلة')),
+        body: Center(
+          child: vm.isLoading
+              ? const CircularProgressIndicator()
+              : vm.isEmpty
+                  ? _buildEmptyState()
+                  : _buildFavouritesList(vm, settings),
+        ),
+        floatingActionButton: buildBackToTopButton(),
+        drawer: const AppDrawer(),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.star_border, size: 140),
+          SizedBox(height: 15),
+          Text(
+            'لم يتم إضافة أحاديث للمفضلة',
+            style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFavouritesList(
+      FavouritesViewModel vm, SettingsViewModel settings) {
+    return ListView.builder(
+      controller: scrollController,
+      itemCount: vm.favourites.length,
+      itemBuilder: (context, index) {
+        final favourite = vm.favourites[index];
+        return _FavouriteHadithCard(
+          favourite: favourite,
+          settings: settings,
+          onRemove: () => vm.removeFavourite(favourite.hadithId),
+          onGetSharh: () => _getSharh(vm, favourite.hadithId),
+        );
+      },
+    ).animate().fade(duration: 200.ms);
+  }
+
+  Future<void> _getSharh(FavouritesViewModel vm, String hadithId) async {
+    final result = await vm.getSharh(hadithId);
+
+    if (!mounted) return;
+
+    if (result.isSuccess) {
+      showMessageDialog(context, title: 'الشرح', content: result.data!);
+    } else {
+      showMessageDialog(
+        context,
+        title: result.error!.arabicTitle,
+        content: result.error!.arabicDescription,
+      );
+    }
+  }
+}
+
+class _FavouriteHadithCard extends StatelessWidget {
+  final FavouriteHadith favourite;
+  final SettingsViewModel settings;
+  final VoidCallback onRemove;
+  final VoidCallback onGetSharh;
+
+  const _FavouriteHadithCard({
+    required this.favourite,
+    required this.settings,
+    required this.onRemove,
+    required this.onGetSharh,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: settings.padding,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(
+        children: [
+          SelectableText(
+            favourite.displayText,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              fontSize: settings.fontSize,
+              fontWeight: settings.fontWeight,
+              fontFamily: settings.fontFamily,
+            ),
+          ),
+          const SizedBox(height: 15),
+          _buildActionRow1(context),
+          const SizedBox(height: 10),
+          _buildActionRow2(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionRow1(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _ActionButton(
+          icon: Icons.manage_search,
+          label: 'الشرح',
+          onPressed: onGetSharh,
+        ),
+        const SizedBox(width: 15),
+        _ActionButton(
+          icon: Icons.content_paste_go,
+          label: 'أحاديث مشابهة',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SimilarHadithView(hadithId: favourite.hadithId),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionRow2(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _ActionButton(
+          icon: Icons.share_rounded,
+          label: 'مشاركة',
+          onPressed: () async {
+            await SharePlus.instance
+                .share(ShareParams(text: favourite.shareText));
+          },
+        ),
+        const SizedBox(width: 15),
+        _ActionButton(
+          icon: Icons.star,
+          label: 'أزل من المفضلة',
+          onPressed: onRemove,
+        ),
+      ],
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 45,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 25),
+        label: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
+    );
+  }
+}
