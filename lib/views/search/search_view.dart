@@ -301,11 +301,11 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
                 const Text('كلمات مستثناة', style: TextStyle(fontSize: 15)),
                 const SizedBox(width: 10),
                 SizedBox(
-                  width: 150,
+                  width: 200,
                   child: TextField(
                     controller: _excludedWordsController,
                     decoration: const InputDecoration(
-                      hintText: 'كلمات للاستثناء',
+                      hintText: 'كلمات أو جملة تعيد استبعادها',
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
                     ),
@@ -327,6 +327,7 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
       child: Row(
         children: [
           Checkbox(
+            checkColor: Colors.white,
             value: vm.saveAdvancedSettings,
             onChanged: (value) => vm.setSaveAdvancedSettings(value ?? true),
           ),
