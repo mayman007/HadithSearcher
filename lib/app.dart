@@ -7,10 +7,7 @@ import 'viewmodels/favourites_viewmodel.dart';
 import 'viewmodels/search_viewmodel.dart';
 import 'viewmodels/settings_viewmodel.dart';
 import 'viewmodels/similar_hadith_viewmodel.dart';
-import 'views/about/about_view.dart';
-import 'views/favourites/favourites_view.dart';
-import 'views/search/search_view.dart';
-import 'views/settings/settings_view.dart';
+import 'views/main_shell.dart';
 import 'views/similar_hadith/similar_hadith_view.dart';
 
 /// Main app widget with Provider setup.
@@ -60,13 +57,13 @@ class HadithSearcherApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,
             debugShowCheckedModeBanner: false,
-            home: const SearchView(),
+            home: const MainShell(),
             routes: {
-              searchRoute: (context) => const SearchView(),
+              searchRoute: (context) => const MainShell(initialIndex: 0),
               similarHadithRoute: (context) => const SimilarHadithView(),
-              favouritesRoute: (context) => const FavouritesView(),
-              settingsRoute: (context) => const SettingsView(),
-              aboutRoute: (context) => const AboutView(),
+              favouritesRoute: (context) => const MainShell(initialIndex: 1),
+              settingsRoute: (context) => const MainShell(initialIndex: 2),
+              aboutRoute: (context) => const MainShell(initialIndex: 3),
             },
           );
         },
