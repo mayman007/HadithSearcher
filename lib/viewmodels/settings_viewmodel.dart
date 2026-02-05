@@ -22,7 +22,6 @@ class SettingsViewModel extends ChangeNotifier {
   double get fontSize => _settings.fontSize.toDouble();
   EdgeInsets get padding => _settings.paddingInsets;
   ThemeMode get themeMode => _settings.themeMode;
-  ColorSchemePreference get colorScheme => _settings.colorScheme;
 
   /// Available font families.
   static const List<String> fontFamilies = [
@@ -55,13 +54,6 @@ class SettingsViewModel extends ChangeNotifier {
   Future<void> setTheme(ThemePreference theme) async {
     await _settingsService.updateTheme(theme);
     _settings = _settings.copyWith(theme: theme);
-    notifyListeners();
-  }
-
-  /// Update color scheme preference.
-  Future<void> setColorScheme(ColorSchemePreference colorScheme) async {
-    await _settingsService.updateColorScheme(colorScheme);
-    _settings = _settings.copyWith(colorScheme: colorScheme);
     notifyListeners();
   }
 

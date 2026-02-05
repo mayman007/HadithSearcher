@@ -8,7 +8,6 @@ class SettingsService {
   SettingsService._internal();
 
   static const String _themeKey = 'theme';
-  static const String _colorSchemeKey = 'colorScheme';
   static const String _fontFamilyKey = 'fontFamily';
   static const String _fontWeightKey = 'fontWeight';
   static const String _fontSizeKey = 'fontSize';
@@ -27,8 +26,6 @@ class SettingsService {
     final p = await prefs;
     return AppSettings(
       theme: ThemePreference.fromString(p.getString(_themeKey) ?? 'system'),
-      colorScheme: ColorSchemePreference.fromString(
-          p.getString(_colorSchemeKey) ?? 'blue'),
       fontFamily: p.getString(_fontFamilyKey) ?? 'Roboto',
       fontWeight: FontWeightPreference.fromString(
           p.getString(_fontWeightKey) ?? 'bold'),
@@ -43,22 +40,10 @@ class SettingsService {
     return p.getString(_themeKey) ?? 'system';
   }
 
-  /// Get color scheme string (for initial app load).
-  Future<String> getColorScheme() async {
-    final p = await prefs;
-    return p.getString(_colorSchemeKey) ?? 'blue';
-  }
-
   /// Update theme setting.
   Future<void> updateTheme(ThemePreference theme) async {
     final p = await prefs;
     await p.setString(_themeKey, theme.toDbString());
-  }
-
-  /// Update color scheme setting.
-  Future<void> updateColorScheme(ColorSchemePreference colorScheme) async {
-    final p = await prefs;
-    await p.setString(_colorSchemeKey, colorScheme.toDbString());
   }
 
   /// Update font family setting.
@@ -89,7 +74,6 @@ class SettingsService {
   Future<void> resetSettings() async {
     final p = await prefs;
     await p.setString(_themeKey, 'system');
-    await p.setString(_colorSchemeKey, 'blue');
     await p.setString(_fontFamilyKey, 'Roboto');
     await p.setString(_fontWeightKey, 'bold');
     await p.setInt(_fontSizeKey, 20);

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 /// App settings for theme and hadith display preferences.
 class AppSettings {
   final ThemePreference theme;
-  final ColorSchemePreference colorScheme;
   final String fontFamily;
   final FontWeightPreference fontWeight;
   final int fontSize;
@@ -11,7 +10,6 @@ class AppSettings {
 
   const AppSettings({
     this.theme = ThemePreference.system,
-    this.colorScheme = ColorSchemePreference.blue,
     this.fontFamily = 'Roboto',
     this.fontWeight = FontWeightPreference.bold,
     this.fontSize = 20,
@@ -22,8 +20,6 @@ class AppSettings {
   factory AppSettings.fromDatabase(Map<String, dynamic> row) {
     return AppSettings(
       theme: ThemePreference.fromString(row['theme'] ?? 'system'),
-      colorScheme:
-          ColorSchemePreference.fromString(row['colorscheme'] ?? 'blue'),
       fontFamily: row['fontfamily'] ?? 'Roboto',
       fontWeight: FontWeightPreference.fromString(row['fontweight'] ?? 'bold'),
       fontSize: row['fontsize'] ?? 20,
@@ -46,7 +42,6 @@ class AppSettings {
   /// Creates a copy with updated values.
   AppSettings copyWith({
     ThemePreference? theme,
-    ColorSchemePreference? colorScheme,
     String? fontFamily,
     FontWeightPreference? fontWeight,
     int? fontSize,
@@ -54,7 +49,6 @@ class AppSettings {
   }) {
     return AppSettings(
       theme: theme ?? this.theme,
-      colorScheme: colorScheme ?? this.colorScheme,
       fontFamily: fontFamily ?? this.fontFamily,
       fontWeight: fontWeight ?? this.fontWeight,
       fontSize: fontSize ?? this.fontSize,
@@ -160,73 +154,6 @@ enum FontWeightPreference {
         return 'عادي';
       case FontWeightPreference.bold:
         return 'عريض';
-    }
-  }
-}
-
-/// Color scheme preference enum.
-enum ColorSchemePreference {
-  blue,
-  green,
-  purple,
-  orange,
-  red,
-  teal;
-
-  /// Converts string from database to enum.
-  static ColorSchemePreference fromString(String value) {
-    switch (value) {
-      case 'green':
-        return ColorSchemePreference.green;
-      case 'purple':
-        return ColorSchemePreference.purple;
-      case 'orange':
-        return ColorSchemePreference.orange;
-      case 'red':
-        return ColorSchemePreference.red;
-      case 'teal':
-        return ColorSchemePreference.teal;
-      default:
-        return ColorSchemePreference.blue;
-    }
-  }
-
-  /// Converts to string for database storage.
-  String toDbString() => name;
-
-  /// Gets the primary color for this scheme.
-  Color get primaryColor {
-    switch (this) {
-      case ColorSchemePreference.blue:
-        return Colors.blue;
-      case ColorSchemePreference.green:
-        return Colors.green;
-      case ColorSchemePreference.purple:
-        return Colors.purple;
-      case ColorSchemePreference.orange:
-        return Colors.orange;
-      case ColorSchemePreference.red:
-        return Colors.red;
-      case ColorSchemePreference.teal:
-        return Colors.teal;
-    }
-  }
-
-  /// Arabic display name.
-  String get arabicName {
-    switch (this) {
-      case ColorSchemePreference.blue:
-        return 'أزرق';
-      case ColorSchemePreference.green:
-        return 'أخضر';
-      case ColorSchemePreference.purple:
-        return 'بنفسجي';
-      case ColorSchemePreference.orange:
-        return 'برتقالي';
-      case ColorSchemePreference.red:
-        return 'أحمر';
-      case ColorSchemePreference.teal:
-        return 'أزرق مخضر';
     }
   }
 }

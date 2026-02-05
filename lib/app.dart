@@ -42,11 +42,6 @@ class HadithSearcherApp extends StatelessWidget {
           final themeMode =
               settingsVm.isLoading ? initialThemeMode : settingsVm.themeMode;
 
-          // Apply color scheme to themes
-          if (!settingsVm.isLoading) {
-            AppTheme.setAccentColor(settingsVm.colorScheme);
-          }
-
           return MaterialApp(
             localizationsDelegates: const [
               GlobalCupertinoLocalizations.delegate,
