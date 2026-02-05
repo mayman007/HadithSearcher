@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/settings.dart';
-import '../services/database_service.dart';
+import '../services/settings_service.dart';
 
 /// ViewModel for app-wide settings (theme, font preferences).
 /// This is shared across all views.
 class SettingsViewModel extends ChangeNotifier {
-  final DatabaseService _db = DatabaseService();
+  final SettingsService _settingsService = SettingsService();
 
   AppSettings _settings = AppSettings.defaults;
   bool _isLoading = true;
@@ -40,12 +40,12 @@ class SettingsViewModel extends ChangeNotifier {
   /// Available padding values.
   static const List<int> paddingValues = [5, 10, 15, 20, 25, 30];
 
-  /// Load settings from database.
+  /// Load settings from SharedPreferences.
   Future<void> loadSettings() async {
     _isLoading = true;
     notifyListeners();
 
-    _settings = await _db.getSettings();
+    _settings = await _settingsService.getSettings();
 
     _isLoading = false;
     notifyListeners();
@@ -53,49 +53,49 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Update theme preference.
   Future<void> setTheme(ThemePreference theme) async {
-    await _db.updateTheme(theme);
+    await _settingsService.updateTheme(theme);
     _settings = _settings.copyWith(theme: theme);
     notifyListeners();
   }
 
   /// Update color scheme preference.
   Future<void> setColorScheme(ColorSchemePreference colorScheme) async {
-    await _db.updateColorScheme(colorScheme);
+    await _settingsService.updateColorScheme(colorScheme);
     _settings = _settings.copyWith(colorScheme: colorScheme);
     notifyListeners();
   }
 
   /// Update font family.
   Future<void> setFontFamily(String fontFamily) async {
-    await _db.updateFontFamily(fontFamily);
+    await _settingsService.updateFontFamily(fontFamily);
     _settings = _settings.copyWith(fontFamily: fontFamily);
     notifyListeners();
   }
 
   /// Update font weight.
   Future<void> setFontWeight(FontWeightPreference fontWeight) async {
-    await _db.updateFontWeight(fontWeight);
+    await _settingsService.updateFontWeight(fontWeight);
     _settings = _settings.copyWith(fontWeight: fontWeight);
     notifyListeners();
   }
 
   /// Update font size.
   Future<void> setFontSize(int fontSize) async {
-    await _db.updateFontSize(fontSize);
+    await _settingsService.updateFontSize(fontSize);
     _settings = _settings.copyWith(fontSize: fontSize);
     notifyListeners();
   }
 
   /// Update padding.
   Future<void> setPadding(int padding) async {
-    await _db.updatePadding(padding);
+    await _settingsService.updatePadding(padding);
     _settings = _settings.copyWith(padding: padding);
     notifyListeners();
   }
 
   /// Reset all settings to defaults.
   Future<void> resetToDefaults() async {
-    await _db.resetSettings();
+    await _settingsService.resetSettings();
     _settings = AppSettings.defaults;
     notifyListeners();
   }

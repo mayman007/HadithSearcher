@@ -1,8 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../models/settings.dart';
 
-/// Service for local SQLite database operations.
+/// Service for local SQLite database operations (favourites only).
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
   factory DatabaseService() => _instance;
@@ -23,7 +22,7 @@ class DatabaseService {
 
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -38,32 +37,13 @@ class DatabaseService {
         hadithid TEXT NOT NULL UNIQUE
       )
     ''');
-
-    await db.execute('''
-      CREATE TABLE settings (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        theme TEXT,
-        colorscheme TEXT,
-        fontfamily TEXT,
-        fontweight TEXT,
-        fontsize INTEGER,
-        padding INTEGER
-      )
-    ''');
-
-    // Insert default settings
-    await db.insert('settings', {
-      'theme': 'system',
-      'colorscheme': 'blue',
-      'fontfamily': 'Roboto',
-      'fontweight': 'bold',
-      'fontsize': 20,
-      'padding': 10,
-    });
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Handle migrations here if needed
+    // Drop settings table if upgrading from version 1
+    if (oldVersion < 2) {
+      await db.execute('DROP TABLE IF EXISTS settings');
+    }
   }
 
   // ==================== FAVOURITES ====================
@@ -124,113 +104,6 @@ class DatabaseService {
     final db = await database;
     final results = await db.query('favourites', columns: ['hadithid']);
     return results.map((row) => row['hadithid'] as String).toSet();
-  }
-
-  // ==================== SETTINGS ====================
-
-  /// Get app settings.
-  Future<AppSettings> getSettings() async {
-    final db = await database;
-    final results = await db.query('settings', where: 'id = 1');
-
-    if (results.isEmpty) {
-      return AppSettings.defaults;
-    }
-
-    return AppSettings.fromDatabase(results.first);
-  }
-
-  /// Get theme string (for initial app load before full settings).
-  Future<String> getTheme() async {
-    final db = await database;
-    final results = await db.query(
-      'settings',
-      columns: ['theme'],
-      where: 'id = 1',
-    );
-
-    if (results.isEmpty) {
-      return 'system';
-    }
-
-    return results.first['theme'] as String? ?? 'system';
-  }
-
-  /// Update theme setting.
-  Future<void> updateTheme(ThemePreference theme) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'theme': theme.toDbString()},
-      where: 'id = 1',
-    );
-  }
-
-  /// Update color scheme setting.
-  Future<void> updateColorScheme(ColorSchemePreference colorScheme) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'colorscheme': colorScheme.toDbString()},
-      where: 'id = 1',
-    );
-  }
-
-  /// Update font family setting.
-  Future<void> updateFontFamily(String fontFamily) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'fontfamily': fontFamily},
-      where: 'id = 1',
-    );
-  }
-
-  /// Update font weight setting.
-  Future<void> updateFontWeight(FontWeightPreference fontWeight) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'fontweight': fontWeight.toDbString()},
-      where: 'id = 1',
-    );
-  }
-
-  /// Update font size setting.
-  Future<void> updateFontSize(int fontSize) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'fontsize': fontSize},
-      where: 'id = 1',
-    );
-  }
-
-  /// Update padding setting.
-  Future<void> updatePadding(int padding) async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {'padding': padding},
-      where: 'id = 1',
-    );
-  }
-
-  /// Reset all settings to defaults.
-  Future<void> resetSettings() async {
-    final db = await database;
-    await db.update(
-      'settings',
-      {
-        'theme': 'system',
-        'colorscheme': 'blue',
-        'fontfamily': 'Roboto',
-        'fontweight': 'bold',
-        'fontsize': 20,
-        'padding': 10,
-      },
-      where: 'id = 1',
-    );
   }
 }
 

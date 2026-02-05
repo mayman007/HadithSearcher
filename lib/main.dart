@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'app.dart';
 import 'services/database_service.dart';
+import 'services/settings_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize database
+  // Initialize database (for favourites)
   final db = DatabaseService();
   await db.database;
 
@@ -14,7 +15,8 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   // Get initial theme for fast startup
-  final themeString = await db.getTheme();
+  final settingsService = SettingsService();
+  final themeString = await settingsService.getTheme();
   final initialThemeMode = _getThemeMode(themeString);
 
   runApp(HadithSearcherApp(initialThemeMode: initialThemeMode));
