@@ -30,6 +30,14 @@ class SearchViewModel extends ChangeNotifier {
   bool _saveAdvancedSettings = true;
   String _searchQuery = '';
 
+  // Initial state for change detection
+  SearchWay? _initialSearchWay;
+  SearchRange? _initialSearchRange;
+  SearchGrade? _initialSearchGrade;
+  SearchMohdith? _initialSearchMohdith;
+  SearchBook? _initialSearchBook;
+  String? _initialExcludedWords;
+
   // Getters
   List<Hadith> get results => _results;
   bool get isLoading => _isLoading;
@@ -184,8 +192,32 @@ class SearchViewModel extends ChangeNotifier {
 
   /// Toggle advanced search panel.
   void toggleAdvancedSearch() {
+    if (!_isAdvancedSearchOpen) {
+      // Opening the panel - save initial state
+      _saveInitialState();
+    }
     _isAdvancedSearchOpen = !_isAdvancedSearchOpen;
     notifyListeners();
+  }
+
+  /// Save the initial state of advanced search settings.
+  void _saveInitialState() {
+    _initialSearchWay = _searchWay;
+    _initialSearchRange = _searchRange;
+    _initialSearchGrade = _searchGrade;
+    _initialSearchMohdith = _searchMohdith;
+    _initialSearchBook = _searchBook;
+    _initialExcludedWords = _excludedWords;
+  }
+
+  /// Check if advanced search settings have changed.
+  bool hasSettingsChanged() {
+    return _initialSearchWay != _searchWay ||
+        _initialSearchRange != _searchRange ||
+        _initialSearchGrade != _searchGrade ||
+        _initialSearchMohdith != _searchMohdith ||
+        _initialSearchBook != _searchBook ||
+        _initialExcludedWords != _excludedWords;
   }
 
   /// Close advanced search panel.

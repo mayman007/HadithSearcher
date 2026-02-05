@@ -113,13 +113,22 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
         ),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               final vm = context.read<SearchViewModel>();
               if (vm.isAdvancedSearchOpen) {
-                // Just close the panel and save prefs, don't re-search
-                vm.saveAdvancedPrefs();
+                // Closing the panel - check if settings changed
+                final hasChanged = vm.hasSettingsChanged();
+                await vm.saveAdvancedPrefs();
+                vm.toggleAdvancedSearch();
+
+                // If settings changed and there's a search query, re-search
+                if (hasChanged && _textController.text.trim().isNotEmpty) {
+                  await _onSearch();
+                }
+              } else {
+                // Opening the panel
+                vm.toggleAdvancedSearch();
               }
-              vm.toggleAdvancedSearch();
             },
             icon: const Icon(Icons.filter_alt, size: 30),
             tooltip: 'البحث المتقدم',
