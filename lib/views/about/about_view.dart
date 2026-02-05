@@ -113,8 +113,7 @@ class AboutView extends StatelessWidget {
           label: 'مشاركة',
           onTap: () async {
             await SharePlus.instance.share(ShareParams(
-              text:
-                  'https://play.google.com/store/apps/details?id=com.moaymandev.hadithsearcher',
+              text: 'https://bit.ly/hadith-searcher',
             ));
           },
         ),

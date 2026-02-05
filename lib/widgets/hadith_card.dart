@@ -145,7 +145,11 @@ class HadithCard extends StatelessWidget {
   }
 
   Future<void> _share() async {
-    await SharePlus.instance.share(ShareParams(text: hadith.shareText));
+    await SharePlus.instance.share(
+      ShareParams(
+          text:
+              '${hadith.shareText}\n\nHadith Searcher:\nhttps://bit.ly/hadith-searcher'),
+    );
   }
 }
 

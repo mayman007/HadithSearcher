@@ -204,8 +204,11 @@ class _FavouriteHadithCard extends StatelessWidget {
           icon: Icons.share_rounded,
           label: 'مشاركة',
           onPressed: () async {
-            await SharePlus.instance
-                .share(ShareParams(text: favourite.shareText));
+            await SharePlus.instance.share(
+              ShareParams(
+                  text:
+                      '${favourite.shareText}\n\nHadith Searcher:\nhttps://bit.ly/hadith-searcher'),
+            );
           },
         ),
         const SizedBox(width: 15),
