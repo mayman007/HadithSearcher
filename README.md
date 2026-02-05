@@ -1,37 +1,46 @@
 <div dir="rtl">
-<div align = "center">
-<img src = "https://i.imgur.com/uwZTeVL.png" width = 200>
+<div align="center">
+<img src="https://i.imgur.com/uwZTeVL.png" width="200">
 
 # **Hadith Searcher**
 
-## تطبيق يسهل البحث عن الأحاديث والتحقق منها
+### تطبيق شامل للبحث في الأحاديث النبوية والتحقق من صحتها
+
 <a href='https://play.google.com/store/apps/details?id=com.moaymandev.hadithsearcher'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/></a>
+
 </div>
 
-## المميزات:
-- البحث في مئات الأحاديث بسرعة ودقة.
-- التحقق من الراوي والمصدر والمحدث وحكم المحدث. 
-- رؤية شروحات الأحاديث.
-- البحث عن الأحاديث المشابهة.
-- تصفية نتائج البحث حسب درجة الصحة والمحدث واختيارات تانية.
-- إضافة الأحاديث للمفضلة للوصول السريع ليها بدون اتصال بالإنترنت.
-- تخصيص حجم ونوع وعرض الخط المستخدم.
+## حول التطبيق
 
-## صور:
-- <img src = "https://i.imgur.com/wo6bGGc.png" width = 300>
-<br>
+تطبيق Hadith Searcher هو تطبيق مجاني ومفتوح المصدر للبحث في آلاف الأحاديث النبوية الشريفة. يوفر التطبيق إمكانيات بحث وتصفية متقدمة، مع عرض تفصيلي للمعلومات المتعلقة بسند الحديث ودرجة صحته.
 
-- <img src = "https://i.imgur.com/KFjDb4B.png" width = 300>
-<br>
+## المميزات
 
-- <img src = "https://i.imgur.com/bS4FQF8.png" width = 300>
-<br>
+- **البحث السريع والدقيق** - البحث في آلاف الأحاديث بسرعة عالية
+- **التحقق من الأحاديث** - عرض الراوي والمصدر والمحدث وحكم المحدث على الحديث
+- **شروحات الأحاديث** - الاطلاع على شروحات وتفاسير الأحاديث
+- **الأحاديث المشابهة** - البحث عن أحاديث مشابهة للحديث المعروض
+- **تصفية متقدمة** - تصفية نتائج البحث حسب درجة الصحة والمحدث والكتاب وخيارات أخرى
+- **المفضلة** - حفظ الأحاديث للوصول السريع إليها بدون اتصال بالإنترنت
+- **تخصيص المظهر** - التحكم في حجم ونوع وثقل الخط المستخدم في عرض الأحاديث
+- **الوضع الليلي** - دعم الوضع الفاتح والداكن
 
-- <img src = "https://i.imgur.com/77MRNM4.png" width = 300>
+## صور من التطبيق
 
-<br>
-<hr>
-<br>
+<div align="center">
 
-جميع الأحاديث والمعلومات مأخوذة من موقع [dorar.net](https://dorar.net/) باستخدام [الAPI الخاص بAhmed ElTabarani](https://github.com/AhmedElTabarani/dorar-hadith-api)
+| البحث | البحث المتقدم |
+|:---:|:---:|
+| <img src="https://i.imgur.com/wo6bGGc.png" width="250"> | <img src="https://i.imgur.com/KFjDb4B.png" width="250"> |
+
+| المفضلة | الإعدادات |
+|:---:|:---:|
+| <img src="https://i.imgur.com/bS4FQF8.png" width="250"> | <img src="https://i.imgur.com/77MRNM4.png" width="250"> |
+
+</div>
+
+## مصادر البيانات
+
+جميع الأحاديث والمعلومات مأخوذة من موقع [الدرر السنية](https://dorar.net/) باستخدام [Dorar Hadith API](https://github.com/AhmedElTabarani/dorar-hadith-api) للمطور Ahmed ElTabarani.
+
 </div>
