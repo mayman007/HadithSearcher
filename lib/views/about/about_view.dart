@@ -155,7 +155,8 @@ class AboutView extends StatelessWidget {
             _ActionIconButton(
               icon: Icons.email,
               label: 'البريد',
-              onTap: () => _launchUrl(Uri.parse('mailto:moaymandev@gmail.com')),
+              onTap: () => _launchUrl(
+                  Uri.parse('mailto:mohamed.ayman.khodeir@gmail.com')),
             ),
           ],
         ),
