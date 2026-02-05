@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../core/constants/routes.dart';
 import '../../services/database_service.dart';
 import '../../viewmodels/favourites_viewmodel.dart';
 import '../../viewmodels/settings_viewmodel.dart';
-import '../../widgets/app_drawer.dart';
 import '../../widgets/back_to_top_button.dart';
 import '../../widgets/message_dialog.dart';
 import '../similar_hadith/similar_hadith_view.dart';
@@ -34,34 +32,25 @@ class _FavouritesViewState extends State<FavouritesView> with ScrollToTopMixin {
     super.dispose();
   }
 
-  Future<bool> _onBackPressed() async {
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(searchRoute, (route) => false);
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<FavouritesViewModel>();
     final settings = context.watch<SettingsViewModel>();
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) _onBackPressed();
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('المفضلة')),
-        body: Center(
-          child: vm.isLoading
-              ? const CircularProgressIndicator()
-              : vm.isEmpty
-                  ? _buildEmptyState()
-                  : _buildFavouritesList(vm, settings),
-        ),
-        floatingActionButton: buildBackToTopButton(),
-        drawer: const AppDrawer(),
+    return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+        'المفضلة',
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      )),
+      body: Center(
+        child: vm.isLoading
+            ? const CircularProgressIndicator()
+            : vm.isEmpty
+                ? _buildEmptyState()
+                : _buildFavouritesList(vm, settings),
       ),
+      floatingActionButton: buildBackToTopButton(),
     );
   }
 

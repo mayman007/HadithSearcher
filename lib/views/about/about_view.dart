@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/constants/routes.dart';
-import '../../widgets/app_drawer.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -15,42 +13,36 @@ class AboutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(searchRoute, (route) => false);
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('حول')),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                const Text(
-                  'Hadith Searcher',
-                  style: TextStyle(fontSize: 37, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                const Text('الإصدار 1.1.5', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 20),
-                _buildInfoCard(
-                  context,
-                  'تطبيق Hadith Searcher هو تطبيق شامل للبحث في آلاف الأحاديث النبوية الشريفة. يوفر إمكانيات بحث وتصفية متقدمة حسب الراوي أو درجة صحة الحديث، مع عرض تفصيلي للمعلومات المتعلقة بسند الحديث.',
-                ),
-                _buildApiInfoCard(context),
-                const SizedBox(height: 15),
-                _buildActionButtons(context),
-                const SizedBox(height: 30),
-                _buildDeveloperSection(context),
-                const SizedBox(height: 30),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+        'حول',
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      )),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const Text(
+                'Hadith Searcher',
+                style: TextStyle(fontSize: 37, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 5),
+              const Text('الإصدار 1.1.5', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 20),
+              _buildInfoCard(
+                context,
+                'تطبيق Hadith Searcher هو تطبيق شامل للبحث في آلاف الأحاديث النبوية الشريفة. يوفر إمكانيات بحث وتصفية متقدمة حسب الراوي أو درجة صحة الحديث، مع عرض تفصيلي للمعلومات المتعلقة بسند الحديث.',
+              ),
+              _buildApiInfoCard(context),
+              const SizedBox(height: 15),
+              _buildActionButtons(context),
+              const SizedBox(height: 30),
+              _buildDeveloperSection(context),
+              const SizedBox(height: 30),
+            ],
           ),
         ),
-        drawer: const AppDrawer(),
       ),
     );
   }

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../models/search_params.dart';
 import '../../services/update_service.dart';
 import '../../viewmodels/search_viewmodel.dart';
-import '../../widgets/app_drawer.dart';
 import '../../widgets/back_to_top_button.dart';
 import '../../widgets/hadith_card.dart';
 import '../../widgets/message_dialog.dart';
@@ -142,7 +141,6 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
               ),
       ),
       floatingActionButton: buildBackToTopButton(),
-      drawer: const AppDrawer(),
     );
   }
 

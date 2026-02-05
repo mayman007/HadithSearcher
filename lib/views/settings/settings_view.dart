@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/routes.dart';
 import '../../models/settings.dart';
 import '../../viewmodels/settings_viewmodel.dart';
-import '../../widgets/app_drawer.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -12,46 +10,40 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<SettingsViewModel>();
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(searchRoute, (route) => false);
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('الإعدادات')),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  _buildThemeSection(context, vm),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'إعدادات خط الأحاديث',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                  _buildFontFamilySection(context, vm),
-                  _buildFontWeightSection(context, vm),
-                  _buildFontSizeSection(context, vm),
-                  _buildPaddingSection(context, vm),
-                ],
-              ),
-            ),
-            Column(
+    return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+        'الإعدادات',
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      )),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SingleChildScrollView(
+            child: Column(
               children: [
-                const SizedBox(height: 50),
-                _buildResetButton(context, vm),
-                const SizedBox(height: 50),
+                const SizedBox(height: 15),
+                _buildThemeSection(context, vm),
+                const SizedBox(height: 20),
+                const Text(
+                  'إعدادات خط الأحاديث',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                _buildFontFamilySection(context, vm),
+                _buildFontWeightSection(context, vm),
+                _buildFontSizeSection(context, vm),
+                _buildPaddingSection(context, vm),
               ],
             ),
-          ],
-        ),
-        drawer: const AppDrawer(),
+          ),
+          Column(
+            children: [
+              const SizedBox(height: 50),
+              _buildResetButton(context, vm),
+              const SizedBox(height: 50),
+            ],
+          ),
+        ],
       ),
     );
   }
