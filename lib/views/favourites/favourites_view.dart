@@ -89,18 +89,39 @@ class _FavouritesViewState extends State<FavouritesView> with ScrollToTopMixin {
   }
 
   Future<void> _getSharh(FavouritesViewModel vm, String hadithId) async {
+    // Show searching snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('جارٍ البحث عن الشرح...'),
+        duration: Duration(seconds: 30),
+      ),
+    );
+
     final result = await vm.getSharh(hadithId);
 
     if (!mounted) return;
 
+    // Hide the searching snackbar
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
     if (result.isSuccess) {
       showMessageDialog(context, title: 'الشرح', content: result.data!);
     } else {
-      showMessageDialog(
-        context,
-        title: result.error!.arabicTitle,
-        content: result.error!.arabicDescription,
-      );
+      // Show no sharh found snackbar for specific errors or show error dialog
+      if (result.error?.arabicTitle == 'لا يوجد شرح' || result.data == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('لا يوجد شرح لهذا الحديث'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        showMessageDialog(
+          context,
+          title: result.error!.arabicTitle,
+          content: result.error!.arabicDescription,
+        );
+      }
     }
   }
 }

@@ -96,12 +96,29 @@ class HadithCard extends StatelessWidget {
 
   Future<void> _showSharh(BuildContext context) async {
     if (!hadith.hasSharhMetadata || hadith.sharhId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('لا يوجد شرح لهذا الحديث'),
+          duration: Duration(seconds: 2),
+        ),
+      );
       return;
     }
+
+    // Show searching snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('جارٍ البحث عن الشرح...'),
+        duration: Duration(seconds: 30),
+      ),
+    );
 
     final result = await ApiService().getSharh(hadith.sharhId!);
 
     if (!context.mounted) return;
+
+    // Hide the searching snackbar
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
     if (result.isSuccess) {
       showMessageDialog(
