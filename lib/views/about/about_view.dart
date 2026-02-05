@@ -38,7 +38,7 @@ class AboutView extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildInfoCard(
                   context,
-                  'تطبيق Hadith Searcher يهدف إلى تسهيل البحث عن الأحاديث والتحقق منها.',
+                  'تطبيق Hadith Searcher هو تطبيق شامل للبحث في آلاف الأحاديث النبوية الشريفة. يوفر إمكانيات بحث وتصفية متقدمة حسب الراوي أو درجة صحة الحديث، مع عرض تفصيلي للمعلومات المتعلقة بسند الحديث.',
                 ),
                 _buildApiInfoCard(context),
                 const SizedBox(height: 15),
