@@ -28,6 +28,7 @@ class SearchViewModel extends ChangeNotifier {
   SearchBook _searchBook = SearchBook.all;
   String _excludedWords = '';
   bool _saveAdvancedSettings = true;
+  String _searchQuery = '';
 
   // Getters
   List<Hadith> get results => _results;
@@ -47,6 +48,7 @@ class SearchViewModel extends ChangeNotifier {
   SearchBook get searchBook => _searchBook;
   String get excludedWords => _excludedWords;
   bool get saveAdvancedSettings => _saveAdvancedSettings;
+  String get searchQuery => _searchQuery;
 
   /// Initialize by loading saved preferences.
   Future<void> init() async {
@@ -85,6 +87,7 @@ class SearchViewModel extends ChangeNotifier {
 
     _excludedWords = prefs.getString('searchExcludedWords') ?? '';
     _saveAdvancedSettings = prefs.getBool('advancedSaveCheckbox') ?? true;
+    _searchQuery = prefs.getString('searchQuery') ?? '';
 
     notifyListeners();
   }
@@ -222,6 +225,11 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSearchQuery(String value) {
+    _searchQuery = value;
+    // Don't notify listeners to avoid rebuild during typing
+  }
+
   void setSaveAdvancedSettings(bool value) {
     _saveAdvancedSettings = value;
     notifyListeners();
@@ -239,6 +247,7 @@ class SearchViewModel extends ChangeNotifier {
     await prefs.setString('searchBook', _searchBook.arabicName);
     await prefs.setString('searchExcludedWords', _excludedWords);
     await prefs.setBool('advancedSaveCheckbox', _saveAdvancedSettings);
+    await prefs.setString('searchQuery', _searchQuery);
   }
 
   /// Clear error message.

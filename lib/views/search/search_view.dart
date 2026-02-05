@@ -27,9 +27,14 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
     initScrollController();
     _checkForUpdate();
 
-    // Initialize ViewModel
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchViewModel>().init();
+    // Initialize ViewModel and sync text controllers
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final vm = context.read<SearchViewModel>();
+      await vm.init();
+      if (mounted) {
+        _textController.text = vm.searchQuery;
+        _excludedWordsController.text = vm.excludedWords;
+      }
     });
   }
 
@@ -68,6 +73,7 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
     final vm = context.read<SearchViewModel>();
     hideBackToTopButton();
     vm.closeAdvancedSearch();
+    vm.setSearchQuery(_textController.text);
     await vm.saveAdvancedPrefs();
     await vm.search(_textController.text);
 
