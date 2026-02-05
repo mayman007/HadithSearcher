@@ -22,25 +22,34 @@ class SettingsView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('الإعدادات')),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 15),
-              _buildThemeSection(context, vm),
-              const SizedBox(height: 20),
-              const Text(
-                'إعدادات خط الأحاديث',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 15),
+                  _buildThemeSection(context, vm),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'إعدادات خط الأحاديث',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  _buildFontFamilySection(context, vm),
+                  _buildFontWeightSection(context, vm),
+                  _buildFontSizeSection(context, vm),
+                  _buildPaddingSection(context, vm),
+                ],
               ),
-              _buildFontFamilySection(context, vm),
-              _buildFontWeightSection(context, vm),
-              _buildFontSizeSection(context, vm),
-              _buildPaddingSection(context, vm),
-              const SizedBox(height: 30),
-              _buildResetButton(context, vm),
-              const SizedBox(height: 15),
-            ],
-          ),
+            ),
+            Column(
+              children: [
+                const SizedBox(height: 50),
+                _buildResetButton(context, vm),
+                const SizedBox(height: 50),
+              ],
+            ),
+          ],
         ),
         drawer: const AppDrawer(),
       ),
