@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import '../../models/settings.dart';
 
 /// App theme configuration.
 class AppTheme {
   AppTheme._();
+
+  static Color _accentColor = Colors.blue;
+
+  /// Set the accent color for themes.
+  static void setAccentColor(ColorSchemePreference colorScheme) {
+    _accentColor = colorScheme.primaryColor;
+  }
 
   /// Light theme.
   static ThemeData get lightTheme {
@@ -14,7 +22,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(50),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.5, color: Colors.black),
+          borderSide: BorderSide(width: 1.5, color: _accentColor),
           borderRadius: BorderRadius.circular(50),
         ),
       ),
@@ -26,23 +34,23 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: TextButton.styleFrom(
-          backgroundColor: Colors.black,
+          backgroundColor: _accentColor,
           foregroundColor: Colors.white,
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
         elevation: 2,
-        backgroundColor: Colors.black,
+        backgroundColor: _accentColor,
         foregroundColor: Colors.white,
       ),
-      colorScheme: const ColorScheme(
+      colorScheme: ColorScheme(
         brightness: Brightness.light,
-        primary: Colors.blue,
-        onPrimary: Colors.blue,
-        primaryContainer: Color.fromARGB(255, 225, 226, 230),
-        secondaryContainer: Colors.black,
-        secondary: Colors.blue,
-        onSecondary: Colors.blue,
+        primary: _accentColor,
+        onPrimary: Colors.white,
+        primaryContainer: const Color.fromARGB(255, 225, 226, 230),
+        secondaryContainer: _accentColor,
+        secondary: _accentColor,
+        onSecondary: Colors.white,
         error: Colors.red,
         onError: Colors.red,
         surface: Colors.white,
@@ -61,7 +69,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(50),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.5, color: Colors.white),
+          borderSide: BorderSide(width: 1.5, color: _accentColor),
           borderRadius: BorderRadius.circular(50),
         ),
       ),
@@ -73,23 +81,23 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: TextButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: _accentColor,
+          foregroundColor: Colors.white,
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
         elevation: 2,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: _accentColor,
+        foregroundColor: Colors.white,
       ),
-      colorScheme: const ColorScheme(
+      colorScheme: ColorScheme(
         brightness: Brightness.dark,
-        primary: Colors.blue,
-        onPrimary: Colors.blue,
-        primaryContainer: Color.fromARGB(255, 40, 38, 41),
-        secondaryContainer: Colors.white,
-        secondary: Colors.blue,
-        onSecondary: Colors.blue,
+        primary: _accentColor,
+        onPrimary: Colors.white,
+        primaryContainer: const Color.fromARGB(255, 40, 38, 41),
+        secondaryContainer: _accentColor,
+        secondary: _accentColor,
+        onSecondary: Colors.white,
         error: Colors.red,
         onError: Colors.red,
         surface: Colors.black,

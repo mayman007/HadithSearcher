@@ -43,6 +43,7 @@ class DatabaseService {
       CREATE TABLE settings (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         theme TEXT,
+        colorscheme TEXT,
         fontfamily TEXT,
         fontweight TEXT,
         fontsize INTEGER,
@@ -53,6 +54,7 @@ class DatabaseService {
     // Insert default settings
     await db.insert('settings', {
       'theme': 'system',
+      'colorscheme': 'blue',
       'fontfamily': 'Roboto',
       'fontweight': 'bold',
       'fontsize': 20,
@@ -164,6 +166,16 @@ class DatabaseService {
     );
   }
 
+  /// Update color scheme setting.
+  Future<void> updateColorScheme(ColorSchemePreference colorScheme) async {
+    final db = await database;
+    await db.update(
+      'settings',
+      {'colorscheme': colorScheme.toDbString()},
+      where: 'id = 1',
+    );
+  }
+
   /// Update font family setting.
   Future<void> updateFontFamily(String fontFamily) async {
     final db = await database;
@@ -211,6 +223,7 @@ class DatabaseService {
       'settings',
       {
         'theme': 'system',
+        'colorscheme': 'blue',
         'fontfamily': 'Roboto',
         'fontweight': 'bold',
         'fontsize': 20,

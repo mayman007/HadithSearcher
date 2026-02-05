@@ -24,6 +24,7 @@ class SettingsView extends StatelessWidget {
               children: [
                 const SizedBox(height: 15),
                 _buildThemeSection(context, vm),
+                _buildColorSchemeSection(context, vm),
                 const SizedBox(height: 20),
                 const Text(
                   'إعدادات خط الأحاديث',
@@ -63,6 +64,43 @@ class SettingsView extends StatelessWidget {
                   value: t,
                   child:
                       Text(t.arabicName, style: const TextStyle(fontSize: 18)),
+                ))
+            .toList(),
+        icon: const Icon(Icons.arrow_drop_down),
+        iconSize: 42,
+        underline: const SizedBox(),
+      ),
+    );
+  }
+
+  Widget _buildColorSchemeSection(BuildContext context, SettingsViewModel vm) {
+    return _SettingsRow(
+      label: 'نظام الألوان',
+      child: DropdownButton<ColorSchemePreference>(
+        value: vm.settings.colorScheme,
+        onChanged: (value) {
+          if (value != null) {
+            vm.setColorScheme(value);
+          }
+        },
+        items: ColorSchemePreference.values
+            .map((c) => DropdownMenuItem(
+                  value: c,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: c.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(c.arabicName, style: const TextStyle(fontSize: 18)),
+                    ],
+                  ),
                 ))
             .toList(),
         icon: const Icon(Icons.arrow_drop_down),
