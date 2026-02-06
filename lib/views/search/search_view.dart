@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import '../../models/search_params.dart';
-import '../../services/update_service.dart';
 import '../../viewmodels/search_viewmodel.dart';
 import '../../widgets/back_to_top_button.dart';
 import '../../widgets/hadith_card.dart';
@@ -24,7 +22,6 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
   void initState() {
     super.initState();
     initScrollController();
-    _checkForUpdate();
 
     // Initialize ViewModel and sync text controllers
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -43,29 +40,6 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
     _excludedWordsController.dispose();
     disposeScrollController();
     super.dispose();
-  }
-
-  Future<void> _checkForUpdate() async {
-    final updateInfo = await UpdateService().checkForUpdate();
-    if (updateInfo != null && mounted) {
-      _showUpdateDialog(updateInfo);
-    }
-  }
-
-  void _showUpdateDialog(AppUpdateInfo updateInfo) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('تحديث جديد'),
-        content: const Text('يوجد تحديث جديد في المتجر, الرجاء التحديث.'),
-        actions: [
-          TextButton(
-            onPressed: () => InAppUpdate.performImmediateUpdate(),
-            child: const Text('تحديث'),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _onSearch() async {
