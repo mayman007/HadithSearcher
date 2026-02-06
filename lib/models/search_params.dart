@@ -152,7 +152,10 @@ enum SearchMohdith {
   malik('179', 'الإمام المالك'),
   shafii('204', 'الإمام الشافعي'),
   bukhari('256', 'البخاري'),
-  muslim('261', 'مسلم');
+  muslim('261', 'مسلم'),
+  daraqutni('385', 'الدارقطني'),
+  ibnHajar('852', 'ابن حجر العسقلاني'),
+  yahyaBinMaeen('232', 'يحيى بن معين');
 
   final String apiCode;
   final String arabicName;
