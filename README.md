@@ -43,4 +43,8 @@
 
 جميع الأحاديث والمعلومات مأخوذة من موقع [الدرر السنية](https://dorar.net/) باستخدام [Dorar Hadith API](https://github.com/AhmedElTabarani/dorar-hadith-api) للمطور Ahmed ElTabarani.
 
+## الترخيص
+
+هذا المشروع مرخص بموجب [رخصة GNU العمومية الإصدار 3](LICENSE) - برنامج حر ومفتوح المصدر.
+
 </div>

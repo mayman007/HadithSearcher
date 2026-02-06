@@ -32,7 +32,7 @@ class AboutView extends StatelessWidget {
               const SizedBox(height: 20),
               _buildInfoCard(
                 context,
-                'تطبيق Hadith Searcher هو تطبيق شامل للبحث في آلاف الأحاديث النبوية الشريفة. يوفر إمكانيات بحث وتصفية متقدمة حسب الراوي أو درجة صحة الحديث، مع عرض تفصيلي للمعلومات المتعلقة بسند الحديث.',
+                'تطبيق Hadith Searcher هو تطبيق مجاني ومفتوح المصدر للبحث في آلاف الأحاديث النبوية الشريفة. يوفر التطبيق إمكانيات بحث وتصفية متقدمة، مع عرض تفصيلي لمعلومات سند الحديث ودرجة صحته.',
               ),
               _buildApiInfoCard(context),
               const SizedBox(height: 15),
@@ -158,6 +158,20 @@ class AboutView extends StatelessWidget {
                   Uri.parse('mailto:mohamed.ayman.khodeir@gmail.com')),
             ),
           ],
+        ),
+        const SizedBox(height: 20),
+        GestureDetector(
+          onTap: () => _launchUrl(
+              Uri.parse('https://hadith-searcher-privacy-policy.pages.dev')),
+          child: const Text(
+            'سياسة الخصوصية',
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              color: Colors.blue,
+              fontSize: 16,
+            ),
+          ),
         ),
       ],
     );
