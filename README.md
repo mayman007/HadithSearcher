@@ -43,6 +43,53 @@
 
 جميع الأحاديث والمعلومات مأخوذة من موقع [الدرر السنية](https://dorar.net/) باستخدام [Dorar Hadith API](https://github.com/AhmedElTabarani/dorar-hadith-api) للمطور Ahmed ElTabarani.
 
+## المتطلبات
+
+- Flutter SDK
+- Android Studio أو VS Code
+- محاكي Android أو جهاز حقيقي للتجربة
+
+## التثبيت والتشغيل
+
+### 1. استنساخ المشروع
+
+```bash
+git clone https://github.com/MAymanKH/HadithSearcher.git
+cd HadithSearcher
+```
+
+### 2. إعداد ملف البيئة
+
+قم بإنشاء ملف `.env` في المجلد الجذر للمشروع وأضف رابط [API](https://github.com/AhmedElTabarani/dorar-hadith-api):
+
+```bash
+API_BASE_URL="https://domain.com"
+```
+
+### 3. تثبيت الاعتماديات
+
+```bash
+flutter pub get
+```
+
+### 4. تشغيل التطبيق
+
+```bash
+flutter run
+```
+
+### 5. بناء التطبيق
+
+**لنظام Android:**
+```bash
+flutter build apk --release
+```
+
+**لنظام iOS:**
+```bash
+flutter build ios --release
+```
+
 ## الترخيص
 
 هذا المشروع مرخص بموجب [رخصة GNU العمومية الإصدار 3](LICENSE) - برنامج حر ومفتوح المصدر.
