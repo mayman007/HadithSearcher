@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -67,39 +68,38 @@ class AboutView extends StatelessWidget {
         color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(30),
       ),
-      child: Column(
-        children: [
-          const Text(
-            'جميع الأحاديث والمعلومات مأخوذة من موقع dorar.net باستخدام API AhmedElTabarani.',
-            style: TextStyle(fontSize: 18),
-          ),
-          GestureDetector(
-            onTap: () => _launchUrl(Uri.parse('https://dorar.net/')),
-            child: const Text(
-              'dorar.net',
-              style: TextStyle(
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: TextStyle(
+              fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
+          children: [
+            const TextSpan(text: 'جميع الأحاديث والمعلومات مأخوذة من موقع '),
+            TextSpan(
+              text: 'dorar.net',
+              style: const TextStyle(
                 decoration: TextDecoration.underline,
                 decorationColor: Colors.blue,
                 color: Colors.blue,
-                fontSize: 18,
               ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => _launchUrl(Uri.parse('https://dorar.net/')),
             ),
-          ),
-          const SizedBox(height: 5),
-          GestureDetector(
-            onTap: () => _launchUrl(Uri.parse(
-                'https://github.com/AhmedElTabarani/dorar-hadith-api')),
-            child: const Text(
-              'AhmedElTabarani API',
-              style: TextStyle(
+            const TextSpan(text: ' باستخدام '),
+            TextSpan(
+              text: 'Dorar Hadith API',
+              style: const TextStyle(
                 decoration: TextDecoration.underline,
                 decorationColor: Colors.blue,
                 color: Colors.blue,
-                fontSize: 18,
               ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => _launchUrl(Uri.parse(
+                    'https://github.com/AhmedElTabarani/dorar-hadith-api')),
             ),
-          ),
-        ],
+            const TextSpan(text: '.'),
+          ],
+        ),
       ),
     );
   }
