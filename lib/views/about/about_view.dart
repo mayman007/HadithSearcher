@@ -29,7 +29,7 @@ class AboutView extends StatelessWidget {
                 style: TextStyle(fontSize: 37, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
-              const Text('الإصدار 2.0.1', style: TextStyle(fontSize: 18)),
+              const Text('الإصدار 2.0.2', style: TextStyle(fontSize: 18)),
               const SizedBox(height: 20),
               _buildInfoCard(
                 context,
