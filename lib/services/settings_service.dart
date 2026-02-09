@@ -23,60 +23,105 @@ class SettingsService {
 
   /// Get app settings.
   Future<AppSettings> getSettings() async {
-    final p = await prefs;
-    return AppSettings(
-      theme: ThemePreference.fromString(p.getString(_themeKey) ?? 'system'),
-      fontFamily: p.getString(_fontFamilyKey) ?? 'Roboto',
-      fontWeight: FontWeightPreference.fromString(
-          p.getString(_fontWeightKey) ?? 'bold'),
-      fontSize: p.getInt(_fontSizeKey) ?? 20,
-      padding: p.getInt(_paddingKey) ?? 10,
-    );
+    try {
+      final p = await prefs;
+      return AppSettings(
+        theme: ThemePreference.fromString(p.getString(_themeKey) ?? 'system'),
+        fontFamily: p.getString(_fontFamilyKey) ?? 'Roboto',
+        fontWeight: FontWeightPreference.fromString(
+            p.getString(_fontWeightKey) ?? 'bold'),
+        fontSize: p.getInt(_fontSizeKey) ?? 20,
+        padding: p.getInt(_paddingKey) ?? 10,
+      );
+    } catch (e) {
+      // Return default settings on error
+      return AppSettings(
+        theme: ThemePreference.system,
+        fontFamily: 'Roboto',
+        fontWeight: FontWeightPreference.bold,
+        fontSize: 20,
+        padding: 10,
+      );
+    }
   }
 
   /// Get theme string (for initial app load before full settings).
   Future<String> getTheme() async {
-    final p = await prefs;
-    return p.getString(_themeKey) ?? 'system';
+    try {
+      final p = await prefs;
+      return p.getString(_themeKey) ?? 'system';
+    } catch (e) {
+      return 'system';
+    }
   }
 
   /// Update theme setting.
-  Future<void> updateTheme(ThemePreference theme) async {
-    final p = await prefs;
-    await p.setString(_themeKey, theme.toDbString());
+  Future<bool> updateTheme(ThemePreference theme) async {
+    try {
+      final p = await prefs;
+      await p.setString(_themeKey, theme.toDbString());
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Update font family setting.
-  Future<void> updateFontFamily(String fontFamily) async {
-    final p = await prefs;
-    await p.setString(_fontFamilyKey, fontFamily);
+  Future<bool> updateFontFamily(String fontFamily) async {
+    try {
+      final p = await prefs;
+      await p.setString(_fontFamilyKey, fontFamily);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Update font weight setting.
-  Future<void> updateFontWeight(FontWeightPreference fontWeight) async {
-    final p = await prefs;
-    await p.setString(_fontWeightKey, fontWeight.toDbString());
+  Future<bool> updateFontWeight(FontWeightPreference fontWeight) async {
+    try {
+      final p = await prefs;
+      await p.setString(_fontWeightKey, fontWeight.toDbString());
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Update font size setting.
-  Future<void> updateFontSize(int fontSize) async {
-    final p = await prefs;
-    await p.setInt(_fontSizeKey, fontSize);
+  Future<bool> updateFontSize(int fontSize) async {
+    try {
+      final p = await prefs;
+      await p.setInt(_fontSizeKey, fontSize);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Update padding setting.
-  Future<void> updatePadding(int padding) async {
-    final p = await prefs;
-    await p.setInt(_paddingKey, padding);
+  Future<bool> updatePadding(int padding) async {
+    try {
+      final p = await prefs;
+      await p.setInt(_paddingKey, padding);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Reset all settings to defaults.
-  Future<void> resetSettings() async {
-    final p = await prefs;
-    await p.setString(_themeKey, 'system');
-    await p.setString(_fontFamilyKey, 'Roboto');
-    await p.setString(_fontWeightKey, 'bold');
-    await p.setInt(_fontSizeKey, 20);
-    await p.setInt(_paddingKey, 10);
+  Future<bool> resetSettings() async {
+    try {
+      final p = await prefs;
+      await p.setString(_themeKey, 'system');
+      await p.setString(_fontFamilyKey, 'Roboto');
+      await p.setString(_fontWeightKey, 'bold');
+      await p.setInt(_fontSizeKey, 20);
+      await p.setInt(_paddingKey, 10);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

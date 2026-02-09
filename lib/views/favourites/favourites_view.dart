@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../services/api_service.dart';
 import '../../services/database_service.dart';
 import '../../viewmodels/favourites_viewmodel.dart';
 import '../../viewmodels/settings_viewmodel.dart';
@@ -81,7 +82,18 @@ class _FavouritesViewState extends State<FavouritesView> with ScrollToTopMixin {
         return _FavouriteHadithCard(
           favourite: favourite,
           settings: settings,
-          onRemove: () => vm.removeFavourite(favourite.hadithId),
+          onRemove: () async {
+            final error = await vm.removeFavourite(favourite.hadithId);
+            if (error != null && mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(error),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
           onGetSharh: () => _getSharh(vm, favourite.hadithId),
         );
       },
@@ -107,21 +119,31 @@ class _FavouritesViewState extends State<FavouritesView> with ScrollToTopMixin {
     if (result.isSuccess) {
       showMessageDialog(context, title: 'الشرح', content: result.data!);
     } else {
-      // Show no sharh found snackbar for specific errors or show error dialog
-      if (result.error?.arabicTitle == 'لا يوجد شرح' || result.data == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('لا يوجد شرح لهذا الحديث'),
-            duration: Duration(seconds: 2),
-          ),
-        );
+      // Show error as snackbar for all errors
+      String errorMessage;
+      if (result.error == ApiError.notFound) {
+        errorMessage = 'لا يوجد شرح لهذا الحديث';
+      } else if (result.error == ApiError.noConnection) {
+        errorMessage = 'تأكد من إتصالك بالإنترنت وأعد المحاولة';
+      } else if (result.error == ApiError.timeout) {
+        errorMessage = 'نفذ الوقت - تأكد من إتصالك بإنترنت مستقر';
       } else {
-        showMessageDialog(
-          context,
-          title: result.error!.arabicTitle,
-          content: result.error!.arabicDescription,
-        );
+        errorMessage = 'حدث خطأ غير متوقع، حاول مرة أخرى';
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          action: result.error != ApiError.notFound
+              ? SnackBarAction(
+                  label: 'أعد المحاولة',
+                  onPressed: () => _getSharh(vm, hadithId),
+                )
+              : null,
+        ),
+      );
     }
   }
 }

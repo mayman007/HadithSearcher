@@ -100,6 +100,7 @@ class HadithCard extends StatelessWidget {
         const SnackBar(
           content: Text('لا يوجد شرح لهذا الحديث'),
           duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
       );
       return;
@@ -127,10 +128,30 @@ class HadithCard extends StatelessWidget {
         content: result.data!,
       );
     } else {
-      showMessageDialog(
-        context,
-        title: result.error!.arabicTitle,
-        content: result.error!.arabicDescription,
+      // Show error as snackbar
+      String errorMessage;
+      if (result.error == ApiError.notFound) {
+        errorMessage = 'لا يوجد شرح لهذا الحديث';
+      } else if (result.error == ApiError.noConnection) {
+        errorMessage = 'تأكد من إتصالك بالإنترنت وأعد المحاولة';
+      } else if (result.error == ApiError.timeout) {
+        errorMessage = 'نفذ الوقت - تأكد من إتصالك بإنترنت مستقر';
+      } else {
+        errorMessage = 'حدث خطأ غير متوقع، حاول مرة أخرى';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          action: result.error != ApiError.notFound
+              ? SnackBarAction(
+                  label: 'أعد المحاولة',
+                  onPressed: () => _showSharh(context),
+                )
+              : null,
+        ),
       );
     }
   }

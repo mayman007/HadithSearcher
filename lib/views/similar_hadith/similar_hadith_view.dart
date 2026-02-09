@@ -68,16 +68,64 @@ class _SimilarHadithViewState extends State<SimilarHadithView>
     }
 
     if (vm.errorMessage != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 100, color: Colors.grey),
-          const SizedBox(height: 20),
-          Text(
-            vm.errorMessage!,
-            style: const TextStyle(fontSize: 20, color: Colors.grey),
-          ),
-        ],
+      IconData icon;
+      String title;
+      String description;
+
+      if (vm.errorMessage!.contains('خطأ بالإتصال')) {
+        icon = Icons.wifi_off;
+        title = 'خطأ بالإتصال بالإنترنت';
+        description = 'تأكد من إتصالك بالإنترنت وأعد المحاولة';
+      } else if (vm.errorMessage!.contains('نفذ الوقت')) {
+        icon = Icons.timer_off;
+        title = 'نفذ الوقت';
+        description = 'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة';
+      } else {
+        icon = Icons.error_outline;
+        title = vm.errorMessage!;
+        description = 'حاول مرة أخرى';
+      }
+
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 100, color: Colors.grey),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              description,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                if (widget.hadithId != null) {
+                  vm.loadSimilarHadith(widget.hadithId!);
+                }
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('أعد المحاولة'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -94,7 +142,18 @@ class _SimilarHadithViewState extends State<SimilarHadithView>
           hadith: hadith,
           isFavourite: vm.isFavourite(hadith.id),
           showSimilarButton: false, // Don't show similar button in similar view
-          onFavouriteToggle: () => vm.toggleFavourite(hadith),
+          onFavouriteToggle: () async {
+            final error = await vm.toggleFavourite(hadith);
+            if (error != null && mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(error),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
         );
       },
     ).animate().fade(duration: 200.ms);

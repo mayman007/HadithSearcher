@@ -5,7 +5,6 @@ import '../../models/search_params.dart';
 import '../../viewmodels/search_viewmodel.dart';
 import '../../widgets/back_to_top_button.dart';
 import '../../widgets/hadith_card.dart';
-import '../../widgets/message_dialog.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -51,20 +50,16 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
     await vm.search(_textController.text);
 
     if (vm.errorMessage == 'emptySearch' && mounted) {
-      showMessageDialog(
-        context,
-        title: 'أكتب شئ',
-        content: 'لا يمكنك ترك خانة البحث فارغة',
-      );
-      vm.clearError();
-    } else if (vm.errorMessage == 'noResults' && mounted) {
-      showMessageDialog(
-        context,
-        title: 'لا توجد نتائج',
-        content: 'استخدم كلمات أو إعدادات أخرى',
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('لا يمكنك ترك خانة البحث فارغة'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       vm.clearError();
     }
+    // Network/timeout errors are handled in _buildResults as inline messages
   }
 
   @override
@@ -312,6 +307,73 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
   }
 
   Widget _buildResults(SearchViewModel vm) {
+    // Show error states inline
+    if (vm.errorMessage != null && vm.errorMessage != 'emptySearch') {
+      IconData icon;
+      String title;
+      String description;
+
+      if (vm.errorMessage == 'noResults') {
+        icon = Icons.search_off;
+        title = 'لا توجد نتائج';
+        description = 'جرب استخدام كلمات أو إعدادات أخرى';
+      } else if (vm.errorMessage!.contains('خطأ بالإتصال')) {
+        icon = Icons.wifi_off;
+        title = 'خطأ بالإتصال بالإنترنت';
+        description = 'تأكد من إتصالك بالإنترنت وأعد المحاولة';
+      } else if (vm.errorMessage!.contains('نفذ الوقت')) {
+        icon = Icons.timer_off;
+        title = 'نفذ الوقت';
+        description = 'تأكد من إتصالك بإنترنت مستقر وأعد المحاولة';
+      } else {
+        icon = Icons.error_outline;
+        title = vm.errorMessage!;
+        description = 'حاول مرة أخرى';
+      }
+
+      return Expanded(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 100, color: Colors.grey),
+                const SizedBox(height: 20),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () => _onSearch(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('أعد المحاولة'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     if (vm.isEmpty) {
       return const Expanded(
         child: Center(
@@ -351,7 +413,18 @@ class _SearchViewState extends State<SearchView> with ScrollToTopMixin {
                 return HadithCard(
                   hadith: hadith,
                   isFavourite: vm.isFavourite(hadith.id),
-                  onFavouriteToggle: () => vm.toggleFavourite(hadith),
+                  onFavouriteToggle: () async {
+                    final error = await vm.toggleFavourite(hadith);
+                    if (error != null && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error),
+                          duration: const Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
                 );
               },
             ).animate().fade(duration: 200.ms),

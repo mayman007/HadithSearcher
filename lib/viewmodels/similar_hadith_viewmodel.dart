@@ -60,19 +60,30 @@ class SimilarHadithViewModel extends ChangeNotifier {
   }
 
   /// Toggle favourite status for a hadith.
-  Future<void> toggleFavourite(Hadith hadith) async {
+  Future<String?> toggleFavourite(Hadith hadith) async {
     if (_favouriteIds.contains(hadith.id)) {
-      await _db.removeFavourite(hadith.id);
-      _favouriteIds.remove(hadith.id);
+      final success = await _db.removeFavourite(hadith.id);
+      if (success) {
+        _favouriteIds.remove(hadith.id);
+        notifyListeners();
+        return null;
+      } else {
+        return 'فشل إزالة الحديث من المفضلة';
+      }
     } else {
-      await _db.addFavourite(
+      final success = await _db.addFavourite(
         hadithId: hadith.id,
         hadithText: hadith.text,
         hadithInfo: hadith.formattedInfo,
       );
-      _favouriteIds.add(hadith.id);
+      if (success) {
+        _favouriteIds.add(hadith.id);
+        notifyListeners();
+        return null;
+      } else {
+        return 'فشل إضافة الحديث للمفضلة';
+      }
     }
-    notifyListeners();
   }
 
   /// Get sharh (explanation) for a hadith.

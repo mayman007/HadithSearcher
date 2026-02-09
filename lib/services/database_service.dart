@@ -50,60 +50,83 @@ class DatabaseService {
 
   /// Get all favourite hadiths.
   Future<List<FavouriteHadith>> getFavourites() async {
-    final db = await database;
-    final results = await db.query(
-      'favourites',
-      orderBy: 'id DESC',
-    );
+    try {
+      final db = await database;
+      final results = await db.query(
+        'favourites',
+        orderBy: 'id DESC',
+      );
 
-    return results.map((row) => FavouriteHadith.fromDatabase(row)).toList();
+      return results.map((row) => FavouriteHadith.fromDatabase(row)).toList();
+    } catch (e) {
+      // Return empty list on error to prevent crashes
+      return [];
+    }
   }
 
   /// Check if a hadith is in favourites.
   Future<bool> isFavourite(String hadithId) async {
-    final db = await database;
-    final results = await db.query(
-      'favourites',
-      where: 'hadithid = ?',
-      whereArgs: [hadithId],
-      limit: 1,
-    );
-    return results.isNotEmpty;
+    try {
+      final db = await database;
+      final results = await db.query(
+        'favourites',
+        where: 'hadithid = ?',
+        whereArgs: [hadithId],
+        limit: 1,
+      );
+      return results.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Add a hadith to favourites.
-  Future<void> addFavourite({
+  Future<bool> addFavourite({
     required String hadithId,
     required String hadithText,
     required String hadithInfo,
   }) async {
-    final db = await database;
-    await db.insert(
-      'favourites',
-      {
-        'hadithid': hadithId,
-        'hadithtext': hadithText,
-        'hadithinfo': hadithInfo,
-      },
-      conflictAlgorithm: ConflictAlgorithm.ignore,
-    );
+    try {
+      final db = await database;
+      await db.insert(
+        'favourites',
+        {
+          'hadithid': hadithId,
+          'hadithtext': hadithText,
+          'hadithinfo': hadithInfo,
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Remove a hadith from favourites.
-  Future<void> removeFavourite(String hadithId) async {
-    final db = await database;
-    await db.delete(
-      'favourites',
-      where: 'hadithid = ?',
-      whereArgs: [hadithId],
-    );
+  Future<bool> removeFavourite(String hadithId) async {
+    try {
+      final db = await database;
+      await db.delete(
+        'favourites',
+        where: 'hadithid = ?',
+        whereArgs: [hadithId],
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Get all favourite hadith IDs (for bulk checking).
   Future<Set<String>> getFavouriteIds() async {
-    final db = await database;
-    final results = await db.query('favourites', columns: ['hadithid']);
-    return results.map((row) => row['hadithid'] as String).toSet();
+    try {
+      final db = await database;
+      final results = await db.query('favourites', columns: ['hadithid']);
+      return results.map((row) => row['hadithid'] as String).toSet();
+    } catch (e) {
+      return {};
+    }
   }
 }
 

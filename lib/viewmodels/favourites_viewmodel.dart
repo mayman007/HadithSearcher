@@ -34,10 +34,15 @@ class FavouritesViewModel extends ChangeNotifier {
   }
 
   /// Remove a hadith from favourites.
-  Future<void> removeFavourite(String hadithId) async {
-    await _db.removeFavourite(hadithId);
-    _favourites.removeWhere((f) => f.hadithId == hadithId);
-    notifyListeners();
+  Future<String?> removeFavourite(String hadithId) async {
+    final success = await _db.removeFavourite(hadithId);
+    if (success) {
+      _favourites.removeWhere((f) => f.hadithId == hadithId);
+      notifyListeners();
+      return null;
+    } else {
+      return 'فشل إزالة الحديث من المفضلة';
+    }
   }
 
   /// Get sharh (explanation) for a hadith.
